@@ -1,10 +1,11 @@
 var Hapi = require('hapi');
 var Travelogue = require('../../');
-var Passport = require('passport-debug');
+var Passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 
 var config = require('./config.json');
-var server = new Hapi.Server('localhost', config.port, config);
+var server = new Hapi.Server('localhost', config.port);
 Travelogue.configure(server, Passport, config);
 
 
