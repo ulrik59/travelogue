@@ -1,11 +1,11 @@
 var Hapi = require('hapi');
-var Diplomat = require('../../');
+var Travelogue = require('../../');
 var Passport = require('passport-debug');
 
 
 var config = require('./config.json');
 var server = new Hapi.Server('localhost', config.port, config);
-Diplomat.configure(server, Passport, config);
+Travelogue.configure(server, Passport, config);
 
 
 Passport.use(new FacebookStrategy(config.passport.facebook, function (accessToken, refreshToken, profile, done) {
@@ -27,7 +27,7 @@ server.addRoute({
     method: 'GET',
     path: '/',
     config: {
-        handler: Diplomat.ensureAuthenticated(function (request) {
+        handler: Travelogue.ensureAuthenticated(function (request) {
 
             // If logged in already, redirect to /home
             // else to /login
@@ -40,7 +40,7 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook',
     config: {
-        // can use either passport.X or Diplomat.passport.X
+        // can use either passport.X or Travelogue.passport.X
         handler: Passport.authenticate('facebook')
     }
 });
@@ -48,7 +48,7 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook/callback',
     config: {
-        handler: Diplomat.passport.authenticate('facebook', function (request) {
+        handler: Travelogue.passport.authenticate('facebook', function (request) {
 
             request.reply.redirect('/').send();
         })

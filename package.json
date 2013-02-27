@@ -1,11 +1,12 @@
 {
-  "name": "hapi-passport",
+  "name": "travelogue",
   "version": "0.0.1",
   "description": "hapi passportjs integration helper",
   "main": "index.js",
   "dependencies": {
     "hoek": "~0.4.5",
-    "boom": "~0.3.3"
+    "boom": "~0.3.3",
+    "passport": ">= 0.1.16"
   },
   "devDependencies": {
     "hapi": ">= 0.13.x",
@@ -20,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/thegoleffect/hapi-passport.git"
+    "url": "git://github.com/thegoleffect/travelogue.git"
   },
   "keywords": [
     "hapi"
