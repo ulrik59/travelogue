@@ -1,35 +1,51 @@
 {
   "name": "travelogue",
-  "version": "0.0.1",
   "description": "hapi passportjs integration helper",
-  "main": "index.js",
-  "dependencies": {
-    "hoek": "~0.4.5",
-    "boom": "~0.3.3",
-    "passport": ">= 0.1.16"
-  },
-  "devDependencies": {
-    "hapi": ">= 0.13.x",
-    "hapi-jar": ">= 0.0.5",
-    "passport-debug": ">= 0.1.15",
-    "passport-facebook": ">= 0.1.4",
-    "chai": "~1.5.0",
-    "mocha": "~1.8.1"
-  },
-  "scripts": {
-    "test": "make test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/thegoleffect/travelogue.git"
-  },
-  "keywords": [
-    "hapi"
-  ],
+  "version": "0.0.1",
   "author": "Van Nguyen <thegoleffect@gmail.com>",
   "contributors": [
     "Jared Hanson <jaredhanson@gmail.com>"
   ],
-  "license": "BSD",
-  "readmeFilename": "README.md"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/walmartlabs/travelogue.git"
+  },
+  "main": "index",
+  "keywords": [
+    "hapi",
+    "hapijs",
+    "passport",
+    "passportjs",
+    "oauth",
+    "openid"
+  ],
+  "engines": {
+    "node": "0.8.x"
+  },
+  "dependencies": {
+    "boom": "0.3.x",
+    "hoek": "0.4.x",
+    "passport": ">= 0.1.16"
+  },
+  "peerDependencies": {
+    "hapi": "0.14.x"
+  },
+  "devDependencies": {
+    "hapi": "0.14.x",
+    "mocha": "1.x.x",
+    "chai": "1.x.x",
+    "blanket": "1.0.x",
+    "travis-cov": "0.2.x"
+  },
+  "scripts": {
+    "test": "make test && make test-cov",
+    "blanket": { "pattern": "//^((?!\/node_modules\/)(?!\/test\/).)*$/ig", "onlyCwd": true, "data-cover-flags": { "branchTracking": true } },
+    "travis-cov": { "threshold": 100 }
+  },
+  "licenses": [
+    {
+      "type": "BSD",
+      "url": "http://github.com/walmartlabs/crumb/raw/master/LICENSE"
+    }
+  ]
 }
