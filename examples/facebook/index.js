@@ -40,6 +40,30 @@ server.addRoute({
 
 server.addRoute({
     method: 'GET',
+    path: '/login',
+    config: {
+        handler: function (request) {
+
+            request.reply('<a href="/auth/facebook">Login with Facebook</a>');
+        }
+    }
+});
+
+server.addRoute({
+    method: 'GET',
+    path: '/home',
+    config: {
+        handler: Travelogue.ensureAuthenticated(function (request) {
+
+            // If logged in already, redirect to /home
+            // else to /login
+            request.reply("ACCESS GRANTED");
+        })
+    }
+});
+
+server.addRoute({
+    method: 'GET',
     path: '/auth/facebook',
     config: {
         // can use either passport.X or Travelogue.passport.X
@@ -50,19 +74,24 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook/callback',
     config: {
-        handler: Travelogue.passport.authenticate('facebook', function (request) {
+        handler: function (request) {
+            
+            Travelogue.passport.authenticate('facebook', { failureRedirect: '/'})(request, function () {
 
-            request.reply.redirect('/').send();
-        })
+                request.reply.redirect('/').send();
+            });
+        }
     }
 });
 
 server.addRoute({
     method: 'GET',
-    path: '/control',
+    path: '/clear',
     config: {
         handler: function (request) {
 
+            request.session = {};
+            request.clearState('yar');
             request.reply('ohai');
         }
     }
