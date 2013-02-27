@@ -11,6 +11,7 @@ Travelogue.configure(server, Passport, config);
 
 Passport.use(new FacebookStrategy(config.passport.facebook, function (accessToken, refreshToken, profile, done) {
 
+    // Find or create user here...
     return done(null, profile);
 }));
 Passport.serializeUser(function(user, done) {
@@ -53,6 +54,17 @@ server.addRoute({
 
             request.reply.redirect('/').send();
         })
+    }
+});
+
+server.addRoute({
+    method: 'GET',
+    path: '/control',
+    config: {
+        handler: function (request) {
+
+            request.reply('ohai');
+        }
     }
 });
 
