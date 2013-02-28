@@ -97,6 +97,17 @@ server.addRoute({
     }
 });
 
+server.addRoute({
+    method: 'GET',
+    path: '/session',
+    config: {
+        handler: function (request) {
+
+            request.reply(request.session);
+        }
+    }
+});
+
 server.start(function () {
 
     console.log('server started on port ' + config.port);
