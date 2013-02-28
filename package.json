@@ -25,7 +25,8 @@
   "dependencies": {
     "boom": "0.3.x",
     "hoek": "0.4.x",
-    "passport": ">= 0.1.16"
+    "passport": ">= 0.1.16",
+    "yar": ">= 0.0.5"
   },
   "peerDependencies": {
     "hapi": "0.14.x"
