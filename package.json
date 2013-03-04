@@ -1,7 +1,7 @@
 {
   "name": "travelogue",
-  "description": "hapi passportjs integration helper",
-  "version": "0.0.1",
+  "description": "hapi passport.js integration helper",
+  "version": "0.1.0",
   "author": "Van Nguyen <thegoleffect@gmail.com>",
   "contributors": [
     "Jared Hanson <jaredhanson@gmail.com>"
@@ -13,7 +13,6 @@
   "main": "index",
   "keywords": [
     "hapi",
-    "hapijs",
     "passport",
     "passportjs",
     "oauth",
@@ -24,14 +23,14 @@
   },
   "dependencies": {
     "boom": "0.3.x",
-    "hoek": "0.4.x",
-    "passport": ">= 0.1.16"
+    "hoek": "0.6.x",
+    "passport": "0.1.x"
   },
   "peerDependencies": {
-    "hapi": "0.14.x"
+    "hapi": "0.15.x"
   },
   "devDependencies": {
-    "hapi": "0.14.x",
+    "hapi": "0.15.x",
     "mocha": "1.x.x",
     "chai": "1.x.x",
     "blanket": "1.0.x",
