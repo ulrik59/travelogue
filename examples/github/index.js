@@ -1,7 +1,7 @@
 var Hapi = require('hapi');
-var Travelogue = require('../../');
+var Travelogue = require('travelogue');
 var Passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
+var GithubStrategy = require('passport-github').Strategy;
 
 
 var config = {
@@ -17,19 +17,20 @@ var config = {
             "failureRedirect": "/login"
         }
     },
-    "facebook": {
-        "clientID": "...",
-        "clientSecret": "...",
-        "callbackURL": "http://localhost:8000/auth/facebook/callback"
+    "github": {
+        clientID: "...",
+        clientSecret: "...",
+        callbackURL: "http://localhost:8000/auth/github/callback"
     }
 };
+
 var server = new Hapi.Server('localhost', config.port);
 Travelogue.configure(server, Passport, config);
 
 
-Passport.use(new FacebookStrategy(config.facebook, function (accessToken, refreshToken, profile, done) {
+Passport.use(new GithubStrategy(config.github, function (accessToken, refreshToken, profile, done) {
 
-    // Find or create user here...
+    console.log('accessToken & args', arguments);
     return done(null, profile);
 }));
 Passport.serializeUser(function(user, done) {
@@ -42,6 +43,7 @@ Passport.deserializeUser(function(obj, done) {
 });
 
 
+
 // addRoutes
 server.addRoute({
     method: 'GET',
@@ -51,7 +53,7 @@ server.addRoute({
 
             // If logged in already, redirect to /home
             // else to /login
-            return request.reply.redirect('/home').send();
+            request.reply.redirect('/home').send();
         })
     }
 });
@@ -62,7 +64,8 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            return request.reply('<a href="/auth/facebook">Login with Facebook</a>');
+            var html = ['<a href="/auth/github">Login with Github</a>'];
+            request.reply(html.join(""));
         }
     }
 });
@@ -82,19 +85,23 @@ server.addRoute({
 
 server.addRoute({
     method: 'GET',
-    path: '/auth/facebook',
+    path: '/auth/github',
     config: {
         // can use either passport.X or Travelogue.passport.X
-        handler: Passport.authenticate('facebook')
+        handler: Passport.authenticate('github')
     }
 });
 server.addRoute({
     method: 'GET',
-    path: '/auth/facebook/callback',
+    path: '/auth/github/callback',
     config: {
         handler: function (request) {
             
-            Travelogue.passport.authenticate('facebook', { failureRedirect: '/'})(request, function () {
+            Travelogue.passport.authenticate('github', { 
+                successRedirect: '/',
+                failureRedirect: '/login',
+                failureFlash: true,
+            })(request, function () {
 
                 return request.reply.redirect('/').send();
             });
@@ -110,7 +117,7 @@ server.addRoute({
 
             request.session = {};
             request.clearState('yar');
-            return request.reply('ohai');
+            request.reply('ohai');
         }
     }
 });
@@ -128,5 +135,5 @@ server.addRoute({
 
 server.start(function () {
 
-    console.log('server started on port: ', server.settings.port);
-});
+    console.log('server started on port ' + config.port);
+})
