@@ -14,7 +14,8 @@ var config = {
     },
     "passport": {
         "urls": {
-            "failureRedirect": "/login"
+            "failureRedirect": "/login",
+            "successRedirect": "/"
         }
     }
 };
@@ -97,11 +98,10 @@ server.addRoute({
         },
         handler: function (request) {
 
-            // console.log('post hit', request)
-            request.body = request.payload;
+            request.body = request.payload; // Not needed in 0.0.2 but kept for reference
             Passport.authenticate('local', { 
-                successRedirect: '/',
-                failureRedirect: '/login',
+                successRedirect: config.passport.urls.successRedirect,
+                failureRedirect: config.passport.urls.failureRedirect,
                 failureFlash: true
             })(request, function () {
 
