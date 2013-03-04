@@ -1,18 +1,40 @@
 var Hapi = require('hapi');
-var Travelogue = require('../../');
+var Travelogue = require('travelogue');
 var Passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 
 
-var config = require('./config.json');
+var config = {
+    "port": 8000,
+    "yar": {
+        "cookieOptions": {
+            "password": "worldofwalmart"
+        },
+        "session": true
+    },
+    "passport": {
+        "urls": {
+            "failureRedirect": "/login"
+        }
+    }
+};
+
 var server = new Hapi.Server('localhost', config.port);
 Travelogue.configure(server, Passport, config);
 
+var USERS = {
+    "van": "walmart"
+};
 
-Passport.use(new FacebookStrategy(config.passport.facebook, function (accessToken, refreshToken, profile, done) {
+Passport.use(new LocalStrategy(function (username, password, done) {
 
     // Find or create user here...
-    return done(null, profile);
+    // In production, use password hashing like bcrypt
+    if (USERS.hasOwnProperty(username) && USERS[username] == password) {
+        return done(null, {username: username});
+    }
+    
+    return done(null, false, {'message': 'invalid credentials'});
 }));
 Passport.serializeUser(function(user, done) {
 
@@ -44,7 +66,8 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            request.reply('<a href="/auth/facebook">Login with Facebook</a>');
+            var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
+            request.reply(form);
         }
     }
 });
@@ -63,26 +86,30 @@ server.addRoute({
 });
 
 server.addRoute({
-    method: 'GET',
-    path: '/auth/facebook',
+    method: 'POST',
+    path: '/login',
     config: {
-        // can use either passport.X or Travelogue.passport.X
-        handler: Passport.authenticate('facebook')
-    }
-});
-server.addRoute({
-    method: 'GET',
-    path: '/auth/facebook/callback',
-    config: {
+        validate: {
+            schema: {
+                username: Hapi.Types.String(),
+                password: Hapi.Types.String()
+            }
+        },
         handler: function (request) {
-            
-            Travelogue.passport.authenticate('facebook', { failureRedirect: '/'})(request, function () {
+
+            // console.log('post hit', request)
+            request.body = request.payload;
+            Passport.authenticate('local', { 
+                successRedirect: '/',
+                failureRedirect: '/login',
+                failureFlash: true
+            })(request, function () {
 
                 request.reply.redirect('/').send();
-            });
+            })
         }
     }
-});
+})
 
 server.addRoute({
     method: 'GET',
