@@ -22,7 +22,7 @@ var config = {
         "clientSecret": "...",
         "callbackURL": "http://localhost:8000/auth/facebook/callback"
     }
-}
+};
 var server = new Hapi.Server('localhost', config.port);
 Travelogue.configure(server, Passport, config);
 
