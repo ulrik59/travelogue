@@ -1,14 +1,14 @@
 {
   "name": "travelogue",
   "description": "hapi passport.js integration helper",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Van Nguyen <thegoleffect@gmail.com>",
   "contributors": [
     "Jared Hanson <jaredhanson@gmail.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/walmartlabs/travelogue.git"
+    "url": "git://github.com/spumko/travelogue.git"
   },
   "main": "index",
   "keywords": [
@@ -45,7 +45,7 @@
   "licenses": [
     {
       "type": "BSD",
-      "url": "http://github.com/walmartlabs/crumb/raw/master/LICENSE"
+      "url": "http://github.com/spumko/travelogue/raw/master/LICENSE"
     }
   ]
 }
