@@ -62,6 +62,10 @@ server.start(function () {
 **Note:** Be careful with setting strategy `callbackURL`'s. If you are testing using `localhost:{port}`, make sure this matches the callbackURL exactly AND the designated callback URL in your third-party application settings.
 
 
+#### Known Broken/Unsupported Strategies
+
+None so far. Will be listed here if they occur.
+
 
 ### Route Handling
 
