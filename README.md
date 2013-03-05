@@ -1,5 +1,5 @@
 <a href="https://github.com/walmartlabs/blammo"><img src="https://raw.github.com/walmartlabs/blammo/master/images/from.png" align="right" /></a>
-![travelogue Logo](https://raw.github.com/walmartlabs/travelogue/master/images/travelogue.png)
+![travelogue Logo](https://raw.github.com/spumko/travelogue/master/images/travelogue.png)
 
 [Passport.js](http://passportjs.org/) integration for [**hapi**](https://github.com/walmartlabs/hapi)
 
