@@ -1,11 +1,11 @@
-<a href="https://github.com/walmartlabs/blammo"><img src="https://raw.github.com/walmartlabs/blammo/master/images/from.png" align="right" /></a>
+<a href="https://github.com/spumko"><img src="https://raw.github.com/spumko/spumko/master/images/from.png" align="right" /></a>
 ![travelogue Logo](https://raw.github.com/spumko/travelogue/master/images/travelogue.png)
 
-[Passport.js](http://passportjs.org/) integration for [**hapi**](https://github.com/walmartlabs/hapi)
+[Passport.js](http://passportjs.org/) integration for [**hapi**](https://github.com/spumko/hapi)
 
-[![Build Status](https://secure.travis-ci.org/walmartlabs/travelogue.png)](http://travis-ci.org/walmartlabs/travelogue)
+[![Build Status](https://secure.travis-ci.org/spumko/travelogue.png)](http://travis-ci.org/spumko/travelogue)
 
-Travelogue is a [Hapi plugin](https://github.com/walmartlabs/hapi/blob/master/docs/Reference.md#server-plugins) that provides modular and unobtrusive authentication to Hapi through Passport. Travelogue supports almost every Passport strategy including Facebook OAuth, Google OpenID, and many others listed [here](https://github.com/jaredhanson/passport#strategies-1).
+Travelogue is a [Hapi plugin](https://github.com/spumko/hapi/blob/master/docs/Reference.md#server-plugins) that provides modular and unobtrusive authentication to Hapi through Passport. Travelogue supports almost every Passport strategy including Facebook OAuth, Google OpenID, and many others listed [here](https://github.com/jaredhanson/passport#strategies-1).
 
 
 ## Install
