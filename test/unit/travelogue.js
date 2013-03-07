@@ -19,7 +19,7 @@ describe('Travelogue', function () {
 
     describe('#configure', function () {
 
-        it('should accept config arguments in the v0.2.0 format', function (done) {
+        it('should accept config arguments in the v0.2.x format', function (done) {
 
             var config = {
                 "port": 8000,
@@ -36,7 +36,7 @@ describe('Travelogue', function () {
             done();
         });
 
-        it('should accept config arguments in the v0.1.1 format', function (done) {
+        it('should accept config arguments in the v0.1.x format', function (done) {
 
             var config = {
                 "port": 8000,
