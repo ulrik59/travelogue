@@ -1,5 +1,5 @@
 var Hapi = require('hapi');
-var Travelogue = require('../../');
+var Travelogue = require('travelogue');
 var Passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
