@@ -1,10 +1,11 @@
 var Hapi = require('hapi');
-var Travelogue = require('travelogue');
+var Travelogue = require('../..');
 var Passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
+var internals = {};
 
-var config = {
+var config = internals.config = {
     "port": 8000,
     "yar": {
         "cookieOptions": {
@@ -19,8 +20,9 @@ var config = {
         }
     }
 };
+internals.successMessage = "ACCESS GRANTED";
 
-var server = new Hapi.Server('localhost', config.port);
+var server = internals.server = new Hapi.Server('localhost', config.port);
 Travelogue.configure(server, Passport, config);
 
 var USERS = {
@@ -81,7 +83,7 @@ server.addRoute({
 
             // If logged in already, redirect to /home
             // else to /login
-            request.reply("ACCESS GRANTED");
+            request.reply(internals.successMessage);
         })
     }
 });
@@ -103,20 +105,7 @@ server.addRoute({
                 successRedirect: config.passport.urls.successRedirect,
                 failureRedirect: config.passport.urls.failureRedirect,
                 failureFlash: true
-            })(request)
-        }
-    }
-});
-
-server.addRoute({
-    method: 'GET',
-    path: '/clear',
-    config: {
-        handler: function (request) {
-
-            request.session = {};
-            request.clearState('yar');
-            request.reply('ohai');
+            })(request);
         }
     }
 });
@@ -127,12 +116,17 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            request.reply(request.session);
+            request.reply(JSON.stringify(request.session));
         }
     }
 });
 
-server.start(function () {
+if (require.main === module) {
+    server.start(function () {
 
-    console.log('server started on port: ', server.settings.port);
-});
+        console.log('server started on port: ', server.settings.port);
+    })
+}
+else {
+    module.exports = internals;
+}
