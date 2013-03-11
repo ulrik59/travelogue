@@ -152,16 +152,55 @@ While, Travelogue only requires the use of a few functions to configure and set 
 
 **Travelogue.configure(server, passport, settings)**
 
+Configures a Hapi `server` to support Travelogue.
+
+- `server` - an instance of Hapi.Server to use with Travelogue
+- `passport` - the passport module
+- `settings` - the options object passed to Travelogue
+    - `yar` - the options object passed to yar
+        - `cookieOptions`
+            - `password` - (Required) secret key used to hash cookie
+            - `session` - used to enable session support
+
+Returns null.
+
 **Travelogue.passport**
+
+Returns an alternative reference to the passport module.
 
 **Travelogue.ensureAuthenticated(handler)**
 
+Provides a commonly used handler wrapper for executing `handler` if the request is authenticated. It will redirect to `settings.passport.urls.failureRedirect` if the request is not authenticated.
+
+Note: This does not check to make sure the user is authorized to access a given endpoint or URL.
+
 **Travelogue.middleware**
+
+Provides direct access to the passport middlewares specifically created for Hapi.
+
+Returns an object with the following interface:
+
+- `authenticate` - authentication related functions
+- `initialize` - initialization related functions
 
 ### Request-level
 
 **Request.isAuthenticated()**
 
+Returns true if the request is authenticated; false, otherwise.
+
 **Request.logIn(user, options, next)**
 
+Provides a direct interface to setting or modifying the user session data.
+
+- `user` - (Required) an object that contains user session data
+- `options` - the options object (currently unused)
+- `next` - (Required) callback function to execute on completion or failure
+
+Returns null. 
+
 **Request.logOut()**
+
+Permanently deletes the user session data ( thus unauthenticating the user and clearing out cookies).
+
+Returns null.
