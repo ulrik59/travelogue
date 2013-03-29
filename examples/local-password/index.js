@@ -1,27 +1,31 @@
 var Hapi = require('hapi');
-var Travelogue = require('travelogue');
-var Passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 
 var config = {
-    "port": 8000,
-    "yar": {
-        "cookieOptions": {
-            "password": "worldofwalmart"
-        },
-        "session": true
-    },
-    "passport": {
-        "urls": {
-            "failureRedirect": "/login",
-            "successRedirect": "/"
-        }
+    hostname: 'localhost',
+    port: 8000,
+    urls: {
+        failureRedirect: '/login'
     }
 };
+var plugins = {
+    yar: {
+        cookieOptions: {
+            password: "worldofwalmart"
+        }
+    }
+    travelogue: config // use '../../' instead of travelogue if testing locally
+}
 
-var server = new Hapi.Server('localhost', config.port);
-Travelogue.configure(server, Passport, config);
+var server = new Hapi.Server(config.hostname, config.port);
+server.plugin.allow({ ext: true }).require(plugins, function (err) {
+
+    if (err) {
+        throw err;
+    }
+});
+
 
 var USERS = {
     "van": "walmart"
@@ -47,17 +51,25 @@ Passport.deserializeUser(function(obj, done) {
 });
 
 
+if (process.env.DEBUG) {
+    server.on('internalError', function (event) {
+
+        // Send to console
+        console.log(event)
+    });
+}
+
+
 // addRoutes
 server.addRoute({
     method: 'GET',
     path: '/',
-    config: {
-        handler: Travelogue.ensureAuthenticated(function (request) {
+    config: { auth: 'passport' }, // replaces ensureAuthenticated
+    handler: function (request) {
 
-            // If logged in already, redirect to /home
-            // else to /login
-            request.reply.redirect('/home').send();
-        })
+        // If logged in already, redirect to /home
+        // else to /login
+        request.reply.redirect('/home').send();
     }
 });
 
@@ -76,13 +88,12 @@ server.addRoute({
 server.addRoute({
     method: 'GET',
     path: '/home',
-    config: {
-        handler: Travelogue.ensureAuthenticated(function (request) {
+    config: { auth: 'passport' },
+    handler: function (request) {
 
-            // If logged in already, redirect to /home
-            // else to /login
-            request.reply("ACCESS GRANTED");
-        })
+        // If logged in already, redirect to /home
+        // else to /login
+        request.reply("ACCESS GRANTED");
     }
 });
 
@@ -98,7 +109,6 @@ server.addRoute({
         },
         handler: function (request) {
 
-            request.body = request.payload; // Not needed in 0.0.2 but kept for reference
             Passport.authenticate('local', { 
                 successRedirect: config.passport.urls.successRedirect,
                 failureRedirect: config.passport.urls.failureRedirect,
@@ -114,9 +124,8 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            request.session = {};
-            request.clearState('yar');
-            request.reply('ohai');
+            request.session.reset();
+            request.reply.redirect('/session').send();
         }
     }
 });
@@ -127,7 +136,7 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            request.reply(request.session);
+            return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
         }
     }
 });
