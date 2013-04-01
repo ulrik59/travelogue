@@ -18,7 +18,8 @@ var config = {
 var plugins = {
     yar: {
         cookieOptions: {
-            password: 'worldofwalmart'
+            password: 'worldofwalmart',
+            isSecure: false
         }
     },
     travelogue: config // use '../../' instead of travelogue if testing locally
