@@ -9,8 +9,8 @@ var config = {
         successRedirect: '/'
     },
     facebook: {
-        clientID: "395614927157421",
-        clientSecret: "9c474b166412943cfcf3cb369fe51b85",
+        clientID: "...",
+        clientSecret: "...",
         callbackURL: "http://localhost:8000/auth/facebook/callback"
     }
 };
