@@ -69,6 +69,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/login',
@@ -84,6 +85,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/home',
@@ -96,6 +98,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/auth/github',
@@ -106,6 +109,7 @@ server.addRoute({
         } 
     }
 });
+
 
 server.addRoute({
     method: 'GET',
@@ -125,6 +129,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/clear',
@@ -137,6 +142,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/session',
@@ -144,6 +150,19 @@ server.addRoute({
         handler: function (request) {
 
             return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
+        }
+    }
+});
+
+
+server.addRoute({
+    method: 'GET',
+    path: '/logout',
+    config: {
+        handler: function (request) {
+
+            request.session._logout();
+            return request.reply.redirect('/').send();
         }
     }
 });

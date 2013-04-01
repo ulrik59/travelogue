@@ -69,6 +69,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/login',
@@ -84,6 +85,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/home',
@@ -96,6 +98,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/auth/facebook',
@@ -106,6 +109,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/auth/facebook/callback',
@@ -114,6 +118,7 @@ server.addRoute({
             
             Passport.authenticate('facebook', {
                 failureRedirect: '/login',
+                successRedirect: '/',
                 failureFlash: true
             })(request, function () {
 
@@ -122,6 +127,7 @@ server.addRoute({
         }
     }
 });
+
 
 server.addRoute({
     method: 'GET',
@@ -135,6 +141,20 @@ server.addRoute({
     }
 });
 
+
+server.addRoute({
+    method: 'GET',
+    path: '/logout',
+    config: {
+        handler: function (request) {
+
+            request.session._logout();
+            return request.reply.redirect('/').send();
+        }
+    }
+});
+
+
 server.addRoute({
     method: 'GET',
     path: '/session',
@@ -145,6 +165,7 @@ server.addRoute({
         }
     }
 });
+
 
 server.start(function () {
 

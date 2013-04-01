@@ -74,6 +74,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/login',
@@ -86,6 +87,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/home',
@@ -97,6 +99,7 @@ server.addRoute({
         request.reply("ACCESS GRANTED");
     }
 });
+
 
 server.addRoute({
     method: 'POST',
@@ -119,6 +122,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/clear',
@@ -131,6 +135,7 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/session',
@@ -141,6 +146,20 @@ server.addRoute({
         }
     }
 });
+
+
+server.addRoute({
+    method: 'GET',
+    path: '/logout',
+    config: {
+        handler: function (request) {
+
+            request.session._logout();
+            return request.reply.redirect('/').send();
+        }
+    }
+});
+
 
 server.start(function () {
 
