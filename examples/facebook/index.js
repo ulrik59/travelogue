@@ -9,8 +9,8 @@ var config = {
         successRedirect: '/'
     },
     facebook: {
-        clientID: "...",
-        clientSecret: "...",
+        clientID: "395614927157421",
+        clientSecret: "9c474b166412943cfcf3cb369fe51b85",
         callbackURL: "http://localhost:8000/auth/facebook/callback"
     }
 };
@@ -22,7 +22,7 @@ var plugins = {
             isSecure: false
         }
     },
-    travelogue: config // use '../../' instead of travelogue if testing locally
+    '../../': config // use '../../' instead of travelogue if testing locally
 };
 
 var server = new Hapi.Server(config.hostname, config.port);

@@ -93,6 +93,9 @@ describe('Travelogue', function () {
                 handler: function (request) {
 
                     var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
+                    if (request.session) {
+                        form += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session) + "</span></pre>";
+                    }
                     request.reply(form);
                 }
             });

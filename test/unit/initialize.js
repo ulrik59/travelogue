@@ -42,12 +42,12 @@ describe('#initialize', function () {
                 initialize(request, function (err) {
 
                     expect(err).to.not.exist;
-                    expect(request.login).to.exist;
+                    expect(request.session._login).to.exist;
                     
                     delete request._passport;
                     var test = (function(){ 
 
-                        request.login({}, {}, function() {})
+                        request.session._login({}, {}, function() {})
                     });
                     expect(test).to.throw();
                     done();
@@ -60,9 +60,8 @@ describe('#initialize', function () {
                 initialize(request, function (err) {
 
                     expect(err).to.not.exist;
-                    expect(request.login).to.exist;
-                    delete request.session; // ignore session related code
-                    request.login({}, function (err) {
+                    expect(request.session._login).to.exist;
+                    request.session._login({}, function (err) {
 
                         expect(err).to.not.exist;
                         done();
@@ -79,12 +78,12 @@ describe('#initialize', function () {
                 initialize(request, function (err) {
 
                     expect(err).to.not.exist;
-                    expect(request.logout).to.exist;
+                    expect(request.session._logout).to.exist;
                     
                     delete request._passport;
                     var test = (function(){ 
 
-                        request.logout({}, {}, function() {})
+                        request.session._logout({}, {}, function() {})
                     });
                     expect(test).to.throw();
                     done();
@@ -97,8 +96,8 @@ describe('#initialize', function () {
                 initialize(request, function (err) {
 
                     expect(err).to.not.exist;
-                    expect(request.logout).to.exist;
-                    request.logout();
+                    expect(request.session._logout).to.exist;
+                    request.session._logout();
                     done();
                 });
             });
