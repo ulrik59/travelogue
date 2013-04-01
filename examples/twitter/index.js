@@ -1,5 +1,5 @@
 var Hapi = require('hapi');
-var FacebookStrategy = require('passport-facebook').Strategy;
+var TwitterStrategy = require('passport-twitter').Strategy;
 
 try {
     var config = require("./config.json");
@@ -12,10 +12,10 @@ catch (e) {
             failureRedirect: '/login',
             successRedirect: '/'
         },
-        facebook: {
-            clientID: "...",
-            clientSecret: "...",
-            callbackURL: "http://localhost:8000/auth/facebook/callback"
+        twitter: {
+            consumerKey: "...",
+            consumerSecret: "...",
+            callbackURL: "http://localhost:8000/auth/twitter/callback"
         }
     };
 }
@@ -39,7 +39,7 @@ server.plugin.allow({ ext: true }).require(plugins, function (err) {
 });
 
 var Passport = server.plugins.travelogue.passport;
-Passport.use(new FacebookStrategy(config.facebook, function (accessToken, refreshToken, profile, done) {
+Passport.use(new TwitterStrategy(config.twitter, function (accessToken, refreshToken, profile, done) {
 
     // Find or create user here...
     return done(null, profile);
@@ -81,7 +81,7 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            var html = '<a href="/auth/facebook">Login with Facebook</a>';
+            var html = '<a href="/auth/twitter">Login with Twitter</a>';
             if (request.session) {
                 html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session) + "</span></pre>";
             }
@@ -106,10 +106,10 @@ server.addRoute({
 
 server.addRoute({
     method: 'GET',
-    path: '/auth/facebook',
+    path: '/auth/twitter',
     config: {
         handler: function (request) {
-            Passport.authenticate('facebook')(request);
+            Passport.authenticate('twitter')(request);
         }
     }
 });
@@ -117,11 +117,11 @@ server.addRoute({
 
 server.addRoute({
     method: 'GET',
-    path: '/auth/facebook/callback',
+    path: '/auth/twitter/callback',
     config: {
         handler: function (request) {
             
-            Passport.authenticate('facebook', {
+            Passport.authenticate('twitter', {
                 failureRedirect: '/login',
                 successRedirect: '/',
                 failureFlash: true
