@@ -7,9 +7,9 @@
   "license": "BSD",
   "dependencies": {
     "passport": "0.1.x",
-    "yar": ">= 0.0.5",
-    "travelogue": "0.0.x",
-    "hapi": "0.14.x",
+    "yar": "0.2.x",
+    "travelogue": "0.2.x",
+    "hapi": "0.16.x",
     "passport-twitter": "~0.1.4"
   }
 }
