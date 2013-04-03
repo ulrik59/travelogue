@@ -27,7 +27,7 @@ var plugins = {
             isSecure: false
         }
     },
-    '../../': config // use '../../' instead of travelogue if testing locally
+    travelogue: config // use '../../' instead of travelogue if testing locally
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
