@@ -1,32 +1,44 @@
 var Hapi = require('hapi');
-var Travelogue = require('travelogue');
-var Passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
-
-var config = {
-    "port": 8000,
-    "yar": {
-        "cookieOptions": {
-            "password": "worldofwalmart"
+try {
+    var config = require("./config.json");
+}
+catch (e) {
+    var config = {
+        hostname: 'localhost',
+        port: 8000,
+        urls: {
+            failureRedirect: '/login',
+            successRedirect: '/'
         },
-        "session": true
-    },
-    "passport": {
-        "urls": {
-            "failureRedirect": "/login"
+        facebook: {
+            clientID: "...",
+            clientSecret: "...",
+            callbackURL: "http://localhost:8000/auth/facebook/callback"
+        }
+    };
+}
+
+var plugins = {
+    yar: {
+        cookieOptions: {
+            password: 'worldofwalmart',
+            isSecure: false
         }
     },
-    "facebook": {
-        "clientID": "...",
-        "clientSecret": "...",
-        "callbackURL": "http://localhost:8000/auth/facebook/callback"
-    }
+    '../../': config // use '../../' instead of travelogue if testing locally
 };
-var server = new Hapi.Server('localhost', config.port);
-Travelogue.configure(server, Passport, config);
 
+var server = new Hapi.Server(config.hostname, config.port);
+server.plugin.allow({ ext: true }).require(plugins, function (err) { 
 
+    if (err) {
+        throw err;
+    }
+});
+
+var Passport = server.plugins.travelogue.passport;
 Passport.use(new FacebookStrategy(config.facebook, function (accessToken, refreshToken, profile, done) {
 
     // Find or create user here...
@@ -41,20 +53,27 @@ Passport.deserializeUser(function(obj, done) {
     done(null, obj);
 });
 
+if (process.env.DEBUG) {
+    server.on('internalError', function (event) {
+
+        // Send to console
+        console.log(event)
+    });
+}
 
 // addRoutes
 server.addRoute({
     method: 'GET',
     path: '/',
-    config: {
-        handler: Travelogue.ensureAuthenticated(function (request) {
+    config: { auth: 'passport' }, // replaces ensureAuthenticated
+    handler: function (request) {
 
-            // If logged in already, redirect to /home
-            // else to /login
-            return request.reply.redirect('/home').send();
-        })
+        // If logged in already, redirect to /home
+        // else to /login
+        return request.reply.redirect('/home').send();
     }
 });
+
 
 server.addRoute({
     method: 'GET',
@@ -62,39 +81,51 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            return request.reply('<a href="/auth/facebook">Login with Facebook</a>');
+            var html = '<a href="/auth/facebook">Login with Facebook</a>';
+            if (request.session) {
+                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session) + "</span></pre>";
+            }
+            return request.reply(html);
         }
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/home',
-    config: {
-        handler: Travelogue.ensureAuthenticated(function (request) {
+    config: { auth: 'passport' },
+    handler: function (request) {
 
-            // If logged in already, redirect to /home
-            // else to /login
-            return request.reply("ACCESS GRANTED");
-        })
+        // If logged in already, redirect to /home
+        // else to /login
+        return request.reply("ACCESS GRANTED");
     }
 });
+
 
 server.addRoute({
     method: 'GET',
     path: '/auth/facebook',
     config: {
-        // can use either passport.X or Travelogue.passport.X
-        handler: Passport.authenticate('facebook')
+        handler: function (request) {
+            Passport.authenticate('facebook')(request);
+        }
     }
 });
+
+
 server.addRoute({
     method: 'GET',
     path: '/auth/facebook/callback',
     config: {
         handler: function (request) {
             
-            Travelogue.passport.authenticate('facebook', { failureRedirect: '/'})(request, function () {
+            Passport.authenticate('facebook', {
+                failureRedirect: '/login',
+                successRedirect: '/',
+                failureFlash: true
+            })(request, function () {
 
                 return request.reply.redirect('/').send();
             });
@@ -102,18 +133,32 @@ server.addRoute({
     }
 });
 
+
 server.addRoute({
     method: 'GET',
     path: '/clear',
     config: {
         handler: function (request) {
 
-            request.session = {};
-            request.clearState('yar');
-            return request.reply('ohai');
+            request.session.reset();
+            return request.reply.redirect('/session').send();
         }
     }
 });
+
+
+server.addRoute({
+    method: 'GET',
+    path: '/logout',
+    config: {
+        handler: function (request) {
+
+            request.session._logout();
+            return request.reply.redirect('/').send();
+        }
+    }
+});
+
 
 server.addRoute({
     method: 'GET',
@@ -121,10 +166,11 @@ server.addRoute({
     config: {
         handler: function (request) {
 
-            return request.reply(request.session);
+            return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
         }
     }
 });
+
 
 server.start(function () {
 

@@ -1,5 +1,5 @@
 {
-  "name": "travelogue-facebook",
+  "name": "travelogue-twitter",
   "version": "0.0.0",
   "description": "Travelogue example showing basic Facebook OAuth authentication",
   "main": "index.js",
@@ -10,6 +10,6 @@
     "yar": "0.2.x",
     "travelogue": "0.2.x",
     "hapi": "0.16.x",
-    "passport-github": "0.1.x"
+    "passport-twitter": "~0.1.4"
   }
 }
