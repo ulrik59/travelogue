@@ -115,7 +115,7 @@ describe('Travelogue', function () {
                 path: '/login',
                 config: {
                     validate: {
-                        schema: {
+                        payload: {
                             username: Hapi.Types.String(),
                             password: Hapi.Types.String()
                         }
@@ -141,7 +141,7 @@ describe('Travelogue', function () {
                 path: '/login2',
                 config: {
                     validate: {
-                        schema: {
+                        payload: {
                             username: Hapi.Types.String(),
                             password: Hapi.Types.String()
                         }
@@ -167,7 +167,7 @@ describe('Travelogue', function () {
                 path: '/login3',
                 config: {
                     validate: {
-                        schema: {
+                        payload: {
                             username: Hapi.Types.String(),
                             password: Hapi.Types.String()
                         }
@@ -191,7 +191,7 @@ describe('Travelogue', function () {
                 path: '/loginAuthCallback',
                 config: {
                     validate: {
-                        schema: {
+                        payload: {
                             username: Hapi.Types.String(),
                             password: Hapi.Types.String()
                         }
@@ -215,7 +215,7 @@ describe('Travelogue', function () {
                 path: '/loginSuccessMessage',
                 config: {
                     validate: {
-                        schema: {
+                        payload: {
                             username: Hapi.Types.String(),
                             password: Hapi.Types.String()
                         }
@@ -238,7 +238,7 @@ describe('Travelogue', function () {
                 path: '/loginFailure',
                 config: {
                     validate: {
-                        schema: {
+                        payload: {
                             username: Hapi.Types.String(),
                             password: Hapi.Types.String()
                         }
