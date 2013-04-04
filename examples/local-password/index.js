@@ -15,7 +15,7 @@ var plugins = {
             password: "worldofwalmart",
             isSecure: false
         }
-    }
+    },
     travelogue: config // use '../../' instead of travelogue if testing locally
 }
 
@@ -32,6 +32,7 @@ var USERS = {
     "van": "walmart"
 };
 
+var Passport = server.plugins.travelogue.passport;
 Passport.use(new LocalStrategy(function (username, password, done) {
 
     // Find or create user here...
@@ -114,8 +115,8 @@ server.addRoute({
         handler: function (request) {
 
             Passport.authenticate('local', { 
-                successRedirect: config.passport.urls.successRedirect,
-                failureRedirect: config.passport.urls.failureRedirect,
+                successRedirect: config.urls.successRedirect,
+                failureRedirect: config.urls.failureRedirect,
                 failureFlash: true
             })(request)
         }

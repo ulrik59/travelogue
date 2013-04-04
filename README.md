@@ -22,29 +22,38 @@ Travelogue has been designed to integrate consistently with Passport APIs - allo
 
 ```javascript
 var config = {
+    hostname: 'localhost',
     port: 8000,
-    "yar": {
-        "cookieOptions": {
-            "password": "worldofwalmart"
-        },
-        "session": true
+    urls: {
+        failureRedirect: '/login',
+        successRedirect: '/'
     },
-    "passport": {
-        "urls": {
-            "failureRedirect": "/login"
-        }
+    facebook: {
+        clientID: "...",
+        clientSecret: "...",
+        callbackURL: "http://localhost:8000/auth/facebook/callback"
     }
-    /* Strategy config could go here
-    "facebook": {
-        "clientID": "...",
-        "clientSecret": "...",
-        "callbackURL": "..."
-    }
-    */
 };
 
-var server = new Hapi.Server('localhost', config.port);
-Travelogue.configure(server, Passport, config); // Modifies both server and Passport
+var plugins = {
+    yar: {
+        cookieOptions: {
+            password: 'worldofwalmart',
+            isSecure: false // required
+        }
+    },
+    travelogue: config
+};
+
+var server = new Hapi.Server(config.hostname, config.port);
+server.plugin.allow({ ext: true }).require(plugins, function (err) { 
+
+    if (err) {
+        throw err;
+    }
+});
+
+var Passport = server.plugins.travelogue.passport;
 
 // Follow normal Passport rules to add Strategies
 Passport.use(/* Strategy Goes Here */);
@@ -95,7 +104,6 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook',
     config: {
-        // can use either passport.X or Travelogue.passport.X
         handler: Passport.authenticate('facebook')
     }
 });
@@ -112,9 +120,13 @@ server.addRoute({
     config: {
         handler: function (request) {
             
-            Travelogue.passport.authenticate('facebook', { failureRedirect: '/'})(request, function () {
+            Passport.authenticate('facebook', {
+                failureRedirect: config.urls.failureRedirect,
+                successRedirect: config.urls.successRedirect,
+                failureFlash: true
+            })(request, function () {
 
-                request.reply.redirect(config.passport.urls.successRedirect || '/').send();
+                return request.reply.redirect('/').send();
             });
         }
     }
@@ -131,13 +143,12 @@ In the typical case, once verified and logged-in, the user has full access to a 
 server.addRoute({
     method: 'GET',
     path: '/home',
-    config: {
-        handler: Travelogue.ensureAuthenticated(function (request) {
+    config: { auth: 'passport' },
+    handler: function (request) {
 
-            // If logged in already, redirect to /home
-            // else to /login
-            request.reply("ACCESS GRANTED");
-        });
+        // If logged in already, redirect to /home
+        // else to /login
+        request.reply("ACCESS GRANTED");
     }
 });
 ```
@@ -150,19 +161,15 @@ However, it may be the case that there may be several levels of user access perm
 
 While, Travelogue only requires the use of a few functions to configure and set up Passport authentication, it may be important to customize Travelogue's behavior outside the defaults. Therefore, Travelogue exposes several low-level methods. This section contains documentation for all methods and variables (__**but may be incomplete for the time being**__).
 
-### Travelogue-level
+### Settings
 
-**Travelogue.configure(server, passport, settings)**
+Some settings must be passed into the Hapi plugins architecture.
 
-Configures a Hapi `server` to support Travelogue.
+- `yar` - the options object passed to yar
+    - `cookieOptions`
+        - `password` - (Required) secret key used to hash cookie
+        - `isSecure` - enables TLS/SSL cookies. Defaults to **true**. Disable for normal http.
 
-- `server` - an instance of Hapi.Server to use with Travelogue
-- `passport` - the passport module
-- `settings` - the options object passed to Travelogue
-    - `yar` - the options object passed to yar
-        - `cookieOptions`
-            - `password` - (Required) secret key used to hash cookie
-            - `session` - used to enable session support
 
 Returns null.
 

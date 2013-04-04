@@ -122,7 +122,7 @@ describe('Travelogue', function () {
                     },
                     handler: function (request) {
 
-                        request.body = request.payload; // Not needed in 0.0.2 but kept for reference
+                        // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', { 
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
@@ -280,9 +280,11 @@ describe('Travelogue', function () {
             url: '/login',
             payload: JSON.stringify(body)
         };
+        
         server.inject(request, function (res) {
 
             var header = res.headers['set-cookie'];
+            expect(header).to.exist;
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
             expect(res.statusCode).to.equal(302);
@@ -329,8 +331,19 @@ describe('Travelogue', function () {
             var header = res.headers['set-cookie'];
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
-            expect(res.statusCode).to.equal(500);
-            done();
+            expect(res.statusCode).to.equal(302);
+            var redirect = {
+                method: 'GET',
+                url: res.headers.location,
+                headers: {
+                    cookie: cookie[1]
+                }
+            };
+            server.inject(redirect, function (res) {
+
+                expect(res.result).to.contain('form');
+                done();
+            });
         });
     });
 
