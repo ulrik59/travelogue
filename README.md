@@ -156,6 +156,24 @@ server.addRoute({
 However, it may be the case that there may be several levels of user access permissions. Just like with Passport, a custom function can be created similar to Passport's typical `ensureAuthenticated`.
 
 
+#### Conflicts with Other Hapi Auth Schemes
+
+It is possible to use multiple Hapi authentication schemes simultaneously within one application. To prevent conflicts, set the `config.auth` to `false` in any handler that should NOT use any auth schemes. An example is shown below.
+
+```javascript
+server.addRoute({
+    method: 'GET',
+    path: '/',
+    config: { 
+        auth: false,
+        handler: function (request) {
+
+            request.reply("Ohai");
+        }
+    },
+});
+```
+
 
 ## API Reference
 
@@ -169,6 +187,11 @@ Some settings must be passed into the Hapi plugins architecture.
     - `cookieOptions`
         - `password` - (Required) secret key used to hash cookie
         - `isSecure` - enables TLS/SSL cookies. Defaults to **true**. Disable for normal http.
+- `travelogue` - the options object passed to travelogue
+    - `defaultMode` - (Optional) If enable, will auto-assign routes to use default auth strategy (which may not necessarily be passport). Defaults to **false**.
+    - `urls` - Urls used by Travelogue/Passport
+        - `failureRedirect` - redirect to this relative URL on failed logins. Defaults to **'/login'**.
+        - `successRedirect` - redirect to this relative URL on successful logins. Defaults to **'/'**.
 
 
 Returns null.

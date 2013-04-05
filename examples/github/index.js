@@ -74,6 +74,7 @@ server.addRoute({
     method: 'GET',
     path: '/login',
     config: {
+        auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
         handler: function (request) {
 
             var html = ['<a href="/auth/github">Login with Github</a>'];
@@ -103,6 +104,7 @@ server.addRoute({
     method: 'GET',
     path: '/auth/github',
     config: {
+        auth: false,
         handler: function (request) {
 
             Passport.authenticate('github')(request);
@@ -115,6 +117,7 @@ server.addRoute({
     method: 'GET',
     path: '/auth/github/callback',
     config: {
+        auth: false,
         handler: function (request) {
             
             Passport.authenticate('github', { 
@@ -134,6 +137,7 @@ server.addRoute({
     method: 'GET',
     path: '/clear',
     config: {
+        auth: false,
         handler: function (request) {
 
             request.session.reset();
@@ -147,6 +151,7 @@ server.addRoute({
     method: 'GET',
     path: '/session',
     config: {
+        auth: false,
         handler: function (request) {
 
             return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
@@ -159,6 +164,7 @@ server.addRoute({
     method: 'GET',
     path: '/logout',
     config: {
+        auth: false,
         handler: function (request) {
 
             request.session._logout();

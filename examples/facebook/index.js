@@ -79,6 +79,7 @@ server.addRoute({
     method: 'GET',
     path: '/login',
     config: {
+        auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
         handler: function (request) {
 
             var html = '<a href="/auth/facebook">Login with Facebook</a>';
@@ -108,6 +109,7 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook',
     config: {
+        auth: false,
         handler: function (request) {
 
             Passport.authenticate('facebook')(request);
@@ -120,6 +122,7 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook/callback',
     config: {
+        auth: false,
         handler: function (request) {
 
             Passport.authenticate('facebook', {
@@ -139,6 +142,7 @@ server.addRoute({
     method: 'GET',
     path: '/clear',
     config: {
+        auth: false,
         handler: function (request) {
 
             request.session.reset();
@@ -152,6 +156,7 @@ server.addRoute({
     method: 'GET',
     path: '/logout',
     config: {
+        auth: false,
         handler: function (request) {
 
             request.session._logout();
@@ -165,6 +170,7 @@ server.addRoute({
     method: 'GET',
     path: '/session',
     config: {
+        auth: false,
         handler: function (request) {
 
             return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");

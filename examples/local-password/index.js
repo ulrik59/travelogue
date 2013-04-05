@@ -80,6 +80,7 @@ server.addRoute({
     method: 'GET',
     path: '/login',
     config: {
+        auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
         handler: function (request) {
 
             var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
@@ -112,6 +113,7 @@ server.addRoute({
                 password: Hapi.Types.String()
             }
         },
+        auth: false,
         handler: function (request) {
 
             Passport.authenticate('local', { 
@@ -128,6 +130,7 @@ server.addRoute({
     method: 'GET',
     path: '/clear',
     config: {
+        auth: false,
         handler: function (request) {
 
             request.session.reset();
@@ -141,6 +144,7 @@ server.addRoute({
     method: 'GET',
     path: '/session',
     config: {
+        auth: false,
         handler: function (request) {
 
             return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
@@ -153,6 +157,7 @@ server.addRoute({
     method: 'GET',
     path: '/logout',
     config: {
+        auth: false,
         handler: function (request) {
 
             request.session._logout();
