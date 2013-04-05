@@ -27,7 +27,7 @@ var plugins = {
             isSecure: false
         }
     },
-    travelogue: config // use '../../' instead of travelogue if testing locally
+    travelogue: config // use '../../' instead of travelogue if testing this repo locally
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
@@ -109,6 +109,7 @@ server.addRoute({
     path: '/auth/facebook',
     config: {
         handler: function (request) {
+
             Passport.authenticate('facebook')(request);
         }
     }
@@ -120,10 +121,10 @@ server.addRoute({
     path: '/auth/facebook/callback',
     config: {
         handler: function (request) {
-            
+
             Passport.authenticate('facebook', {
-                failureRedirect: '/login',
-                successRedirect: '/',
+                failureRedirect: config.urls.failureRedirect,
+                successRedirect: config.urls.successRedirect,
                 failureFlash: true
             })(request, function () {
 

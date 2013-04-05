@@ -21,7 +21,7 @@ var plugins = {
             isSecure: false
         }
     }
-    travelogue: config // use '../../' instead of travelogue if testing locally
+    travelogue: config // use '../../' instead of travelogue if testing this repo locally
 }
 
 var server = new Hapi.Server(config.hostname, config.port);
@@ -103,8 +103,8 @@ server.addRoute({
     method: 'GET',
     path: '/auth/github',
     config: {
-        // can use either passport.X or Travelogue.passport.X
         handler: function (request) {
+
             Passport.authenticate('github')(request);
         } 
     }

@@ -27,7 +27,7 @@ var plugins = {
             isSecure: false
         }
     },
-    travelogue: config // use '../../' instead of travelogue if testing locally
+    travelogue: config // use '../../' instead of travelogue if testing this repo locally
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
@@ -109,6 +109,7 @@ server.addRoute({
     path: '/auth/twitter',
     config: {
         handler: function (request) {
+
             Passport.authenticate('twitter')(request);
         }
     }

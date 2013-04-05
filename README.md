@@ -3,8 +3,6 @@
 
 [Passport.js](http://passportjs.org/) integration for [**hapi**](https://github.com/spumko/hapi)
 
-**Note**: Docs are out of date for v0.2.0.
-
 [![Build Status](https://secure.travis-ci.org/spumko/travelogue.png)](http://travis-ci.org/spumko/travelogue)
 
 Travelogue is a [Hapi plugin](https://github.com/spumko/hapi/blob/master/docs/Reference.md#server-plugins) that provides modular and unobtrusive authentication to Hapi through Passport. Travelogue supports almost every Passport strategy including Facebook OAuth, Google OpenID, and many others listed [here](https://github.com/jaredhanson/passport#strategies-1).
@@ -39,7 +37,7 @@ var plugins = {
     yar: {
         cookieOptions: {
             password: 'worldofwalmart',
-            isSecure: false // required
+            isSecure: false // required for non-https applications
         }
     },
     travelogue: config
@@ -95,7 +93,7 @@ Authorization checks whether or not the user logged-on is allowed to access a sp
 
 #### External Authentication
 
-For most third-party authentication schemes/strategies, External Authentication is done via a single route using the `Passport.authentication(__strategy__)` handler.
+For most third-party authentication schemes/strategies, External Authentication is done via a single route using the `Passport.authenticate(__strategy__)(request)` handler.
 
 This handler typically will redirect the user to the third-party website, authenticate the user, and redirect to the `callbackURL` configured for that specific strategy (the Internal Authentication step).
 
@@ -104,14 +102,16 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook',
     config: {
-        handler: Passport.authenticate('facebook')
+        handler: function (request) {
+            Passport.authenticate('facebook')(request);
+        }
     }
 });
 ```
 
 #### Internal Authentication
 
-For all authentication schemes and strategies, the External Authentication information must be sent back to the server. Thus, one route handler must be specifically catered to the task of retrieving this information and processing it appropriately (using the `Passport.authenticate(strategy, options)(request, handler)` format).
+For all authentication schemes and strategies, the External Authentication information must be sent back to the server. Thus, one route handler must be specifically catered to the task of retrieving this information and processing it appropriately (using the `Passport.authenticate(strategy, options)(request, passthroughHandler)` format).
 
 ```javascript
 server.addRoute({
@@ -137,7 +137,7 @@ server.addRoute({
 
 After verifying the identity of a user, the server will need to determine the permissions a user has for specific routes and resources.
 
-In the typical case, once verified and logged-in, the user has full access to a new set of routes. Travelogue provides a shortcut to verify that a user is logged-on via the `Travelogue.ensureAuthenticated(handler)` interface.
+In the typical case, once verified and logged-in, the user has full access to a new set of routes. Travelogue provides a shortcut to verify that a user is logged-on via the `config.auth` interface.
 
 ```javascript
 server.addRoute({
@@ -153,7 +153,7 @@ server.addRoute({
 });
 ```
 
-However, it may be the case that there may be several levels of user access permissions. Just like with Passport, a custom function can be created similar to `ensureAuthenticated`. A helper function may be added in the future to make this easier.
+However, it may be the case that there may be several levels of user access permissions. Just like with Passport, a custom function can be created similar to Passport's typical `ensureAuthenticated`.
 
 
 
@@ -173,15 +173,11 @@ Some settings must be passed into the Hapi plugins architecture.
 
 Returns null.
 
+### API
+
 **Travelogue.passport**
 
-Returns an alternative reference to the passport module.
-
-**Travelogue.ensureAuthenticated(handler)**
-
-Provides a commonly used handler wrapper for executing `handler` if the request is authenticated. It will redirect to `settings.passport.urls.failureRedirect` if the request is not authenticated.
-
-Note: This does not check to make sure the user is authorized to access a given endpoint or URL.
+Returns an alternative reference to the passport module. Can also be accessed from `server.plugins.travelogue.passport`.
 
 **Travelogue.middleware**
 
@@ -192,13 +188,15 @@ Returns an object with the following interface:
 - `authenticate` - authentication related functions
 - `initialize` - initialization related functions
 
+Those functions can be modified to add custom behavior with respect to Passport. Modify at your own risk.
+
 ### Request-level
 
-**Request.isAuthenticated()**
+**Request.session._isAuthenticated()**
 
 Returns true if the request is authenticated; false, otherwise.
 
-**Request.logIn(user, options, next)**
+**Request.session._logIn(user, options, next)**
 
 Provides a direct interface to setting or modifying the user session data.
 
@@ -208,7 +206,7 @@ Provides a direct interface to setting or modifying the user session data.
 
 Returns null. 
 
-**Request.logOut()**
+**Request.session._logOut()**
 
 Permanently deletes the user session data ( thus unauthenticating the user and clearing out cookies).
 
