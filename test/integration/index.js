@@ -31,7 +31,7 @@ describe('Travelogue', function () {
     var plugins = {
         yar: {
             cookieOptions: {
-                password: 'worldofwalmart'
+                password: 'secret'
             }
         },
         '../../': config
@@ -41,13 +41,13 @@ describe('Travelogue', function () {
 
     before(function (done) {
         
-        server.plugin.allow({ ext: true }).require(plugins, function (err) {
+        server.pack.allow({ ext: true }).require(plugins, function (err) {
             
             expect(err).to.not.exist;
             
             var USERS = {
-                'van': 'walmart',
-                'walmart': 'van'
+                'john': 'doe',
+                'doe': 'john'
             };
 
             var passport = server.plugins.travelogue.passport;
@@ -65,7 +65,7 @@ describe('Travelogue', function () {
             passport.serializeUser(function(user, done) {
 
                 var err = null;
-                if (user.username == 'walmart') {
+                if (user.username == 'doe') {
                     err = 'test serializeUser err';
                 }
                 done(err, user);
@@ -83,7 +83,7 @@ describe('Travelogue', function () {
                 config: { auth: 'passport' },
                 handler: function () {
 
-                    this.reply.redirect('/home').send();        // If logged in already, redirect to /home, otherwise to /login
+                    this.reply.redirect('/home');        // If logged in already, redirect to /home, otherwise to /login
                 }
             });
 
@@ -94,7 +94,7 @@ describe('Travelogue', function () {
 
                     var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
                     if (request.session) {
-                        form += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session) + "</span></pre>";
+                        form += '<br/><br/><pre><span style="background-color: #eee">session: ' + JSON.stringify(request.session) + '</span></pre>';
                     }
                     request.reply(form);
                 }
@@ -116,13 +116,12 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
 
-                        // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', { 
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
@@ -142,19 +141,19 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
 
-                        request.body = request.payload; // Not needed in 0.0.2 but kept for reference
+                        // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         request.session.returnTo = '/session'
                         passport.authenticate('local', { 
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
                             successFlash: true,
-                            failureMessage: "not logged in",
+                            failureMessage: 'not logged in',
                             failureFlash: 'not logged in',
                             successReturnToOrRedirect: request.session.returnTo
                         })(request);
@@ -168,19 +167,19 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
 
-                        request.body = request.payload; // Not needed in 0.0.2 but kept for reference
+                        // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', { 
                             failureRedirect: config.urls.failureRedirect,
                             authInfo: true
                         })(request, function () {
 
-                            request.reply("ohai");
+                            request.reply('ohai');
                         });
                     }
                 }
@@ -192,19 +191,19 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
 
-                        request.body = request.payload; // Not needed in 0.0.2 but kept for reference
+                        // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', { 
                             failureRedirect: config.urls.failureRedirect,
                             authInfo: true
                         }, function () {
 
-                            request.reply("ohai");
+                            request.reply('ohai');
                         })(request);
                     }
                 }
@@ -216,18 +215,18 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
 
-                        request.body = request.payload; // Not needed in 0.0.2 but kept for reference
+                        // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', { 
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
-                            successMessage: "logged in",
-                            successFlash: "logged in"
+                            successMessage: 'logged in',
+                            successFlash: 'logged in'
                         })(request);
                     }
                 }
@@ -239,13 +238,13 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
 
-                        request.body = request.payload; // Not needed in 0.0.2 but kept for reference
+                        // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', { 
                             
                         })(request);
@@ -272,8 +271,8 @@ describe('Travelogue', function () {
     it('should allow for login via POST', function (done) {
 
         var body = {
-            username: 'van',
-            password: 'walmart'
+            username: 'john',
+            password: 'doe'
         };
         var request = { 
             method: 'POST',
@@ -318,8 +317,8 @@ describe('Travelogue', function () {
     it('should redirect on fail serializeUser', function (done) {
 
         var body = {
-            username: 'walmart',
-            password: 'van'
+            username: 'doe',
+            password: 'john'
         };
         var request = { 
             method: 'POST',
@@ -350,8 +349,8 @@ describe('Travelogue', function () {
     it('should allow for login via POST with successReturnToOrRedirect', function (done) {
 
         var body = {
-            username: 'van',
-            password: 'walmart'
+            username: 'john',
+            password: 'doe'
         };
         var request = { 
             method: 'POST',
@@ -395,8 +394,8 @@ describe('Travelogue', function () {
     it('should authenticate and passthrough to handler', function (done) {
 
         var body = {
-            username: 'van',
-            password: 'walmart'
+            username: 'john',
+            password: 'doe'
         };
         var request = { 
             method: 'POST',
@@ -414,8 +413,8 @@ describe('Travelogue', function () {
     it('should authenticate and passthrough to callback', function (done) {
 
         var body = {
-            username: 'van',
-            password: 'walmart'
+            username: 'john',
+            password: 'doe'
         };
         var request = { 
             method: 'POST',
@@ -433,8 +432,8 @@ describe('Travelogue', function () {
     it('should show string versions of flash messages', function (done) {
 
         var body = {
-            username: 'van',
-            password: 'walmart'
+            username: 'john',
+            password: 'doe'
         };
         var request = { 
             method: 'POST',
@@ -478,7 +477,7 @@ describe('Travelogue', function () {
     it('should flash error if invalid credentials used (failureMessage)', function (done) {
 
         var body = {
-            username: 'van',
+            username: 'john',
             password: 'xwalmartx'
         };
         var request = { 
@@ -509,7 +508,7 @@ describe('Travelogue', function () {
    it('should flash error if invalid credentials used', function (done) {
 
         var body = {
-            username: 'van',
+            username: 'john',
             password: 'xwalmartx'
         };
         var request = { 
@@ -542,7 +541,7 @@ describe('Travelogue', function () {
    it('should flash string error if invalid credentials used', function (done) {
 
         var body = {
-            username: 'van',
+            username: 'john',
             password: 'xwalmartx'
         };
         var request = { 
@@ -575,7 +574,7 @@ describe('Travelogue', function () {
    it('should redirect if invalid credentials used and attempt to access restricted page', function (done) {
 
         var body = {
-            username: 'van',
+            username: 'john',
             password: 'xwalmartx'
         };
         var request = { 
