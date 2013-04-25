@@ -179,7 +179,7 @@ server.addRoute({
             }
         }
     }
-})
+});
 
 
 server.start(function () {
