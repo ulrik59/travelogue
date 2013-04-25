@@ -108,7 +108,7 @@ server.addRoute({
     path: '/login',
     config: {
         validate: {
-            schema: {
+            payload: {
                 username: Hapi.Types.String(),
                 password: Hapi.Types.String()
             }
@@ -165,6 +165,21 @@ server.addRoute({
         }
     }
 });
+
+
+server.addRoute({
+    method: 'GET',
+    path: '/public/{path*}',
+    config: {
+        auth: 'passport',
+        handler: {
+            directory: {
+                path: './public',
+                listing: true
+            }
+        }
+    }
+})
 
 
 server.start(function () {
