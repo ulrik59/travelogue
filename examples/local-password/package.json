@@ -9,7 +9,7 @@
     "passport": "0.1.x",
     "yar": "0.3.x",
     "travelogue": "0.3.x",
-    "hapi": "1.6.x",
+    "hapi": "1.7.x",
     "passport-local": "~0.1.6"
   }
 }
