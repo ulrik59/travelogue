@@ -82,8 +82,12 @@ server.addRoute({
         auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
         handler: function (request) {
 
-            var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
-            request.reply(form);
+            if (request.session._isAuthenticated()) {
+                request.reply.redirect('/home');
+            } else {
+                var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
+                request.reply(form);
+            }
         }
     }
 });
@@ -97,7 +101,7 @@ server.addRoute({
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply("ACCESS GRANTED");
+        request.reply("ACCESS GRANTED<br/><br/><a href='/logout'>Logout</a>");
     }
 });
 
@@ -183,5 +187,5 @@ server.addRoute({
 
 server.start(function () {
 
-    console.log('server started on port: ', server.settings.port);
+    console.log('server started on port: ', server.info.port);
 });
