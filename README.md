@@ -44,7 +44,7 @@ var plugins = {
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.plugin.allow({ ext: true }).require(plugins, function (err) { 
+server.pack.allow({ ext: true }).require(plugins, function (err) { 
 
     if (err) {
         throw err;
@@ -64,7 +64,7 @@ server.route(routeOne);
 
 server.start(function () {
 
-    console.log('server started on port: ', server.settings.port);
+    console.log('server started on port: ', server.info.port);
 });
 ```
 
@@ -126,7 +126,7 @@ server.addRoute({
                 failureFlash: true
             })(request, function () {
 
-                return request.reply.redirect('/').send();
+                return request.reply.redirect('/');
             });
         }
     }
