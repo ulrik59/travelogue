@@ -110,7 +110,7 @@ describe('#authenticate', function () {
             var reqMock = {};
             reqMock.reply = function (response) {
 
-                var expectedVal = strFailures.map(function(d){ return d.challenge; }).join(', ')
+                var expectedVal = strFailures.map(function(d){ return d.challenge; }).join(', ');
                 expect(response.response.headers['WWW-Authenticate']).to.equal(expectedVal);
                 done();
             };

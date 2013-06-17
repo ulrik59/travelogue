@@ -45,9 +45,9 @@ describe('#initialize', function () {
                     expect(request.session._login).to.exist;
                     
                     delete request._passport;
-                    var test = (function(){ 
+                    var test = (function () { 
 
-                        request.session._login({}, {}, function() {})
+                        request.session._login({}, {}, function () {});
                     });
                     expect(test).to.throw();
                     done();
@@ -81,9 +81,9 @@ describe('#initialize', function () {
                     expect(request.session._logout).to.exist;
                     
                     delete request._passport;
-                    var test = (function(){ 
+                    var test = (function () { 
 
-                        request.session._logout({}, {}, function() {})
+                        request.session._logout({}, {}, function () {})
                     });
                     expect(test).to.throw();
                     done();

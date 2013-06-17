@@ -20,7 +20,7 @@ var plugins = {
 }
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.plugin.allow({ ext: true }).require(plugins, function (err) {
+server.pack.allow({ ext: true }).require(plugins, function (err) {
 
     if (err) {
         throw err;
@@ -71,7 +71,7 @@ server.addRoute({
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply.redirect('/home').send();
+        request.reply.redirect('/home');
     }
 });
 
@@ -134,7 +134,7 @@ server.addRoute({
         handler: function (request) {
 
             request.session.reset();
-            request.reply.redirect('/session').send();
+            request.reply.redirect('/session');
         }
     }
 });
@@ -161,7 +161,7 @@ server.addRoute({
         handler: function (request) {
 
             request.session._logout();
-            return request.reply.redirect('/').send();
+            return request.reply.redirect('/');
         }
     }
 });
@@ -169,5 +169,5 @@ server.addRoute({
 
 server.start(function () {
 
-    console.log('server started on port: ', server.settings.port);
+    console.log('server started on port: ', server.info.port);
 });
