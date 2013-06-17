@@ -41,7 +41,7 @@ describe('Travelogue', function () {
 
     before(function (done) {
         
-        server.plugin.allow({ ext: true }).require(plugins, function (err) {
+        server.pack.allow({ ext: true }).require(plugins, function (err) {
             
             expect(err).to.not.exist;
             
@@ -83,7 +83,7 @@ describe('Travelogue', function () {
                 config: { auth: 'passport' },
                 handler: function () {
 
-                    this.reply.redirect('/home').send();        // If logged in already, redirect to /home, otherwise to /login
+                    this.reply.redirect('/home');//.send();        // If logged in already, redirect to /home, otherwise to /login
                 }
             });
 
@@ -116,8 +116,8 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
@@ -142,8 +142,8 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
@@ -168,8 +168,8 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
@@ -192,8 +192,8 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
@@ -216,8 +216,8 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
@@ -239,8 +239,8 @@ describe('Travelogue', function () {
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.Types.String(),
-                            password: Hapi.Types.String()
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
                         }
                     },
                     handler: function (request) {
