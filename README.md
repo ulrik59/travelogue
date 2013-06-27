@@ -5,7 +5,7 @@
 
 [![Build Status](https://secure.travis-ci.org/spumko/travelogue.png)](http://travis-ci.org/spumko/travelogue)
 
-Travelogue is a [Hapi plugin](https://github.com/spumko/hapi/blob/master/docs/Reference.md#server-plugins) that provides modular and unobtrusive authentication to Hapi through Passport. Travelogue supports almost every Passport strategy including Facebook OAuth, Google OpenID, and many others listed [here](https://github.com/jaredhanson/passport#strategies-1).
+Travelogue is a [Hapi plugin](https://github.com/spumko/hapi/blob/master/docs/Reference.md#server-plugins) that provides modular and unobtrusive authentication to Hapi through Passport. Travelogue supports almost every Passport strategy including Facebook OAuth, Google OpenID, and many others listed [here](https://github.com/jaredhanson/passport/wiki/Strategies).
 
 
 ## Install
@@ -36,7 +36,7 @@ var config = {
 var plugins = {
     yar: {
         cookieOptions: {
-            password: 'worldofwalmart',
+            password: 'worldofwalmart', // cookie secret
             isSecure: false // required for non-https applications
         }
     },
@@ -73,7 +73,7 @@ server.start(function () {
 
 #### Known Broken/Unsupported Strategies
 
-None so far. Will be listed here if they occur.
+Check the [GitHub Issues area](https://github.com/spumko/travelogue/issues) for exisiting issues and to report an issue.
 
 
 ### Route Handling
@@ -124,8 +124,11 @@ server.addRoute({
                 failureRedirect: config.urls.failureRedirect,
                 successRedirect: config.urls.successRedirect,
                 failureFlash: true
-            })(request, function () {
+            })(request, function (err) {
 
+                if (err && err.isBoom) {
+                    // This would be a good place to flash error message
+                }
                 return request.reply.redirect('/').send();
             });
         }

@@ -1,31 +1,36 @@
 var Hapi = require('hapi');
-var GithubStrategy = require('passport-github').Strategy;
+var GoogleStrategy = require('passport-google').Strategy;
 
+try {
+    var config = require("./config.json");
+}
+catch (e) {
+    var config = {
+        hostname: 'localhost',
+        port: 8000,
+        urls: {
+            failureRedirect: '/login',
+            successRedirect: '/'
+        },
+        google: {
+            realm: "http://localhost:8000/",
+            returnURL: "http://localhost:8000/auth/google/return"
+        }
+    };
+}
 
-var config = {
-    hostname: 'localhost',
-    port: 8000,
-    urls: {
-        failureRedirect: '/login'
-    }
-    github: {
-        clientID: "...",
-        clientSecret: "...",
-        callbackURL: "http://localhost:8000/auth/github/callback"
-    }
-};
 var plugins = {
     yar: {
         cookieOptions: {
-            password: "worldofwalmart",
+            password: 'worldofwalmart',
             isSecure: false
         }
-    }
+    },
     travelogue: config // use '../../' instead of travelogue if testing this repo locally
-}
+};
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.pack.allow({ ext: true }).require(plugins, function (err) {
+server.pack.allow({ ext: true }).require(plugins, function (err) { 
 
     if (err) {
         throw err;
@@ -33,9 +38,9 @@ server.pack.allow({ ext: true }).require(plugins, function (err) {
 });
 
 var Passport = server.plugins.travelogue.passport;
-Passport.use(new GithubStrategy(config.github, function (accessToken, refreshToken, profile, done) {
+Passport.use(new GoogleStrategy(config.google, function (accessToken, refreshToken, profile, done) {
 
-    // Find or create uer here...
+    // Find or create user here...
     return done(null, profile);
 }));
 Passport.serializeUser(function(user, done) {
@@ -46,7 +51,6 @@ Passport.deserializeUser(function(obj, done) {
 
     done(null, obj);
 });
-
 
 if (process.env.DEBUG) {
     server.on('internalError', function (event) {
@@ -65,7 +69,7 @@ server.addRoute({
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply.redirect('/home');
+        return request.reply.redirect('/home');
     }
 });
 
@@ -77,11 +81,11 @@ server.addRoute({
         auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
         handler: function (request) {
 
-            var html = ['<a href="/auth/github">Login with Github</a>'];
+            var html = '<a href="/auth/google">Login with Google</a>';
             if (request.session) {
-                html.push("<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>");
+                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
             }
-            request.reply(html.join(""));
+            return request.reply(html);
         }
     }
 });
@@ -102,30 +106,33 @@ server.addRoute({
 
 server.addRoute({
     method: 'GET',
-    path: '/auth/github',
+    path: '/auth/google',
     config: {
         auth: false,
         handler: function (request) {
 
-            Passport.authenticate('github')(request);
-        } 
+            Passport.authenticate('google')(request);
+        }
     }
 });
 
 
 server.addRoute({
     method: 'GET',
-    path: '/auth/github/callback',
+    path: '/auth/google/return',
     config: {
         auth: false,
         handler: function (request) {
-            
-            Passport.authenticate('github', { 
-                successRedirect: '/',
-                failureRedirect: '/login',
-                failureFlash: true,
-            })(request, function () {
 
+            Passport.authenticate('google', {
+                failureRedirect: config.urls.failureRedirect,
+                successRedirect: config.urls.successRedirect,
+                failureFlash: true
+            })(request, function (err) {
+
+                if (err && err.isBoom) {
+                    request.session.error = err;
+                }
                 return request.reply.redirect('/');
             });
         }
@@ -141,20 +148,7 @@ server.addRoute({
         handler: function (request) {
 
             request.session.reset();
-            request.reply.redirect('/session');
-        }
-    }
-});
-
-
-server.addRoute({
-    method: 'GET',
-    path: '/session',
-    config: {
-        auth: false,
-        handler: function (request) {
-
-            return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
+            return request.reply.redirect('/session');
         }
     }
 });
@@ -173,7 +167,21 @@ server.addRoute({
     }
 });
 
+
+server.addRoute({
+    method: 'GET',
+    path: '/session',
+    config: {
+        auth: false,
+        handler: function (request) {
+
+            return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
+        }
+    }
+});
+
+
 server.start(function () {
 
-    console.log('server started on port ' + server.info.port);
-})
+    console.log('server started on port: ', server.info.port);
+});

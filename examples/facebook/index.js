@@ -84,7 +84,7 @@ server.addRoute({
 
             var html = '<a href="/auth/facebook">Login with Facebook</a>';
             if (request.session) {
-                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session) + "</span></pre>";
+                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
             }
             return request.reply(html);
         }
