@@ -25,31 +25,9 @@ describe('#authenticate', function () {
 
     it('should accept function in place of options', function (done) {
 
-        var authenticate = Travelogue.internals.authenticate('local', function (err) { });
+        var authenticate = Travelogue.internals.authenticate(Travelogue.internals.defaults)('local', function (err) { });
         expect(authenticate).to.exist;
         done();
-    });
-
-    describe('#backupNext', function () {
-
-        it('should redirect to success URL if no error given', function (done) {
-
-
-            var options = {
-                successRedirect: '/success'
-            };
-            var reqMock = {
-                reply: {}
-            };
-            reqMock.reply.redirect = function (url) {
-
-                expect(url).to.exist;
-                expect(url).to.equal(options.successRedirect);
-                done();
-            };
-            var backupNext = Travelogue.internals.backupNextFactory(reqMock, options);
-            backupNext();
-        });
     });
 
     describe('#allFailed', function () {

@@ -117,7 +117,7 @@ describe('Travelogue', function () {
                 }
             });
 
-            server.start(function (err) {
+            server.start(function () {
 
                 done();
             })
