@@ -27,7 +27,7 @@ describe('Travelogue', function () {
             successRedirect: '/home'
         }
     };
-        
+
     var plugins = {
         yar: {
             cookieOptions: {
@@ -36,15 +36,15 @@ describe('Travelogue', function () {
         },
         '../../': config
     };
-    
+
     var server = new Hapi.Server(0);
 
     before(function (done) {
-        
+
         server.pack.allow({ ext: true }).require(plugins, function (err) {
-            
+
             expect(err).to.not.exist;
-            
+
             var USERS = {
                 'van': 'walmart',
                 'walmart': 'van'
@@ -56,13 +56,13 @@ describe('Travelogue', function () {
                 // Find or create user here...
                 // In production, use password hashing like bcrypt
                 if (USERS.hasOwnProperty(username) && USERS[username] == password) {
-                    return done(null, {username: username});
+                    return done(null, { username: username });
                 }
-    
-                return done(null, false, {'message': 'invalid credentials'});
+
+                return done(null, false, { 'message': 'invalid credentials' });
             }));
-            
-            passport.serializeUser(function(user, done) {
+
+            passport.serializeUser(function (user, done) {
 
                 var err = null;
                 if (user.username == 'walmart') {
@@ -70,8 +70,8 @@ describe('Travelogue', function () {
                 }
                 done(err, user);
             });
-            
-            passport.deserializeUser(function(obj, done) {
+
+            passport.deserializeUser(function (obj, done) {
 
                 done(null, obj);
             });
@@ -86,7 +86,7 @@ describe('Travelogue', function () {
                     this.reply('Hello');
                 }
             });
-            
+
             server.addRoute({
                 method: 'GET',
                 path: '/home',
@@ -109,7 +109,7 @@ describe('Travelogue', function () {
                     },
                     handler: function (request) {
 
-                        passport.authenticate('localx', { 
+                        passport.authenticate('localx', {
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect
                         })(request);
@@ -118,7 +118,7 @@ describe('Travelogue', function () {
             });
 
             server.start(function (err) {
-                
+
                 done();
             })
         });
@@ -130,12 +130,12 @@ describe('Travelogue', function () {
             username: 'van',
             password: 'walmart'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login',
             payload: JSON.stringify(body)
         };
-        
+
         server.inject(request, function (res) {
 
             var header = res.headers['set-cookie'];

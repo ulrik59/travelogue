@@ -20,8 +20,10 @@ var it = Lab.test;
 
 describe('#initialize', function () {
 
+    Travelogue.internals.setHapi(require('hapi'));
+
     var initialize = Travelogue.internals.initialize();
-    
+
     it('should generate new session if request.session undefined', function (done) {
 
         var request = {};
@@ -31,7 +33,7 @@ describe('#initialize', function () {
             done();
         });
     });
-    
+
     describe("request functions", function () {
 
         describe("#login", function () {
@@ -43,17 +45,17 @@ describe('#initialize', function () {
 
                     expect(err).to.not.exist;
                     expect(request.session._login).to.exist;
-                    
-                    delete request._passport;
-                    var test = (function () { 
 
-                        request.session._login({}, {}, function () {});
+                    delete request._passport;
+                    var test = (function () {
+
+                        request.session._login({}, {}, function () { });
                     });
                     expect(test).to.throw();
                     done();
                 });
             });
-                
+
             it('should accept function in place of options', function (done) {
 
                 var request = {};
@@ -79,17 +81,17 @@ describe('#initialize', function () {
 
                     expect(err).to.not.exist;
                     expect(request.session._logout).to.exist;
-                    
-                    delete request._passport;
-                    var test = (function () { 
 
-                        request.session._logout({}, {}, function () {})
+                    delete request._passport;
+                    var test = (function () {
+
+                        request.session._logout({}, {}, function () { })
                     });
                     expect(test).to.throw();
                     done();
                 });
             });
-                
+
             it('should accept function in place of options', function (done) {
 
                 var request = {};
