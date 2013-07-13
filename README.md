@@ -13,7 +13,6 @@ Travelogue is a [Hapi plugin](https://github.com/spumko/hapi/blob/master/docs/Re
     $ npm install travelogue yar passport
 
 
-
 ## Usage
 
 Travelogue has been designed to integrate consistently with Passport APIs - allowing developers who have used Passport before to use Travelogue with very few modifications.  Thus, most Travelogue apps will follow the same general format outlined below:
@@ -44,7 +43,7 @@ var plugins = {
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.plugin.allow({ ext: true }).require(plugins, function (err) { 
+server.pack.allow({ ext: true }).require(plugins, function (err) { 
 
     if (err) {
         throw err;
@@ -64,7 +63,7 @@ server.route(routeOne);
 
 server.start(function () {
 
-    console.log('server started on port: ', server.settings.port);
+    console.log('server started on port: ', server.info.port);
 });
 ```
 

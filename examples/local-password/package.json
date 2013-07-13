@@ -6,10 +6,10 @@
   "author": "Van Nguyen <thegoleffect@gmail.com>",
   "license": "BSD",
   "dependencies": {
-    "passport-local": "~0.1.6",
-    "passport": "~0.1.17",
-    "yar": "~0.3.0",
-    "travelogue": "~0.3.0",
-    "hapi": "~1.8.1"
+    "passport-local": "0.1.x",
+    "passport": "0.1.x",
+    "yar": "0.3.x",
+    "travelogue": "0.4.x",
+    "hapi": "1.x.x"
   }
 }

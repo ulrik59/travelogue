@@ -38,16 +38,16 @@ Passport.use(new LocalStrategy(function (username, password, done) {
     // Find or create user here...
     // In production, use password hashing like bcrypt
     if (USERS.hasOwnProperty(username) && USERS[username] == password) {
-        return done(null, {username: username});
+        return done(null, { username: username });
     }
-    
-    return done(null, false, {'message': 'invalid credentials'});
+
+    return done(null, false, { 'message': 'invalid credentials' });
 }));
-Passport.serializeUser(function(user, done) {
+Passport.serializeUser(function (user, done) {
 
     done(null, user);
 });
-Passport.deserializeUser(function(obj, done) {
+Passport.deserializeUser(function (obj, done) {
 
     done(null, obj);
 });
@@ -83,8 +83,12 @@ server.addRoute({
         auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
         handler: function (request) {
 
-            var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
-            request.reply(form);
+            if (request.session._isAuthenticated()) {
+                request.reply.redirect('/home');
+            } else {
+                var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
+                request.reply(form);
+            }
         }
     }
 });
@@ -98,7 +102,7 @@ server.addRoute({
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply("ACCESS GRANTED");
+        request.reply("ACCESS GRANTED<br/><br/><a href='/logout'>Logout</a>");
     }
 });
 
@@ -108,15 +112,15 @@ server.addRoute({
     path: '/login',
     config: {
         validate: {
-            schema: {
-                username: Hapi.Types.String(),
-                password: Hapi.Types.String()
+            payload: {
+                username: Hapi.types.String(),
+                password: Hapi.types.String()
             }
         },
         auth: false,
         handler: function (request) {
 
-            Passport.authenticate('local', { 
+            Passport.authenticate('local', {
                 successRedirect: config.urls.successRedirect,
                 failureRedirect: config.urls.failureRedirect,
                 failureFlash: true
