@@ -31,7 +31,7 @@ var plugins = {
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.plugin.allow({ ext: true }).require(plugins, function (err) { 
+server.pack.allow({ ext: true }).require(plugins, function (err) { 
 
     if (err) {
         throw err;
@@ -70,7 +70,7 @@ server.addRoute({
 
         // If logged in already, redirect to /home
         // else to /login
-        return request.reply.redirect('/home').send();
+        return request.reply.redirect('/home');
     }
 });
 
@@ -84,7 +84,7 @@ server.addRoute({
 
             var html = '<a href="/auth/twitter">Login with Twitter</a>';
             if (request.session) {
-                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session) + "</span></pre>";
+                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
             }
             return request.reply(html);
         }
@@ -131,7 +131,7 @@ server.addRoute({
                 failureFlash: true
             })(request, function () {
 
-                return request.reply.redirect('/').send();
+                return request.reply.redirect('/');
             });
         }
     }
@@ -146,7 +146,7 @@ server.addRoute({
         handler: function (request) {
 
             request.session.reset();
-            return request.reply.redirect('/session').send();
+            return request.reply.redirect('/session');
         }
     }
 });
@@ -160,7 +160,7 @@ server.addRoute({
         handler: function (request) {
 
             request.session._logout();
-            return request.reply.redirect('/').send();
+            return request.reply.redirect('/');
         }
     }
 });
@@ -181,5 +181,5 @@ server.addRoute({
 
 server.start(function () {
 
-    console.log('server started on port: ', server.settings.port);
+    console.log('server started on port: ', server.info.port);
 });

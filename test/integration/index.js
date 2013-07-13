@@ -27,7 +27,7 @@ describe('Travelogue', function () {
             successRedirect: '/'
         }
     };
-        
+
     var plugins = {
         yar: {
             cookieOptions: {
@@ -36,15 +36,15 @@ describe('Travelogue', function () {
         },
         '../../': config
     };
-    
+
     var server = new Hapi.Server(0);
 
     before(function (done) {
-        
+
         server.pack.allow({ ext: true }).require(plugins, function (err) {
-            
+
             expect(err).to.not.exist;
-            
+
             var USERS = {
                 'john': 'doe',
                 'doe': 'john'
@@ -56,13 +56,13 @@ describe('Travelogue', function () {
                 // Find or create user here...
                 // In production, use password hashing like bcrypt
                 if (USERS.hasOwnProperty(username) && USERS[username] == password) {
-                    return done(null, {username: username});
+                    return done(null, { username: username });
                 }
-    
-                return done(null, false, {'message': 'invalid credentials'});
+
+                return done(null, false, { 'message': 'invalid credentials' });
             }));
-            
-            passport.serializeUser(function(user, done) {
+
+            passport.serializeUser(function (user, done) {
 
                 var err = null;
                 if (user.username == 'doe') {
@@ -70,8 +70,8 @@ describe('Travelogue', function () {
                 }
                 done(err, user);
             });
-            
-            passport.deserializeUser(function(obj, done) {
+
+            passport.deserializeUser(function (obj, done) {
 
                 done(null, obj);
             });
@@ -122,7 +122,7 @@ describe('Travelogue', function () {
                     },
                     handler: function (request) {
 
-                        passport.authenticate('local', { 
+                        passport.authenticate('local', {
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
                             failureFlash: true,
@@ -134,7 +134,7 @@ describe('Travelogue', function () {
                     }
                 }
             });
-            
+
             server.addRoute({
                 method: 'POST',
                 path: '/login2',
@@ -149,7 +149,7 @@ describe('Travelogue', function () {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         request.session.returnTo = '/session'
-                        passport.authenticate('local', { 
+                        passport.authenticate('local', {
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
                             successFlash: true,
@@ -160,7 +160,7 @@ describe('Travelogue', function () {
                     }
                 }
             });
-            
+
             server.addRoute({
                 method: 'POST',
                 path: '/login3',
@@ -174,7 +174,7 @@ describe('Travelogue', function () {
                     handler: function (request) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
-                        passport.authenticate('local', { 
+                        passport.authenticate('local', {
                             failureRedirect: config.urls.failureRedirect,
                             authInfo: true
                         })(request, function () {
@@ -184,7 +184,7 @@ describe('Travelogue', function () {
                     }
                 }
             });
-            
+
             server.addRoute({
                 method: 'POST',
                 path: '/loginAuthCallback',
@@ -198,7 +198,7 @@ describe('Travelogue', function () {
                     handler: function (request) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
-                        passport.authenticate('local', { 
+                        passport.authenticate('local', {
                             failureRedirect: config.urls.failureRedirect,
                             authInfo: true
                         }, function () {
@@ -208,7 +208,7 @@ describe('Travelogue', function () {
                     }
                 }
             });
-            
+
             server.addRoute({
                 method: 'POST',
                 path: '/loginSuccessMessage',
@@ -222,7 +222,7 @@ describe('Travelogue', function () {
                     handler: function (request) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
-                        passport.authenticate('local', { 
+                        passport.authenticate('local', {
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
                             successMessage: 'logged in',
@@ -231,7 +231,7 @@ describe('Travelogue', function () {
                     }
                 }
             });
-            
+
             server.addRoute({
                 method: 'POST',
                 path: '/loginFailure',
@@ -245,8 +245,8 @@ describe('Travelogue', function () {
                     handler: function (request) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
-                        passport.authenticate('local', { 
-                            
+                        passport.authenticate('local', {
+
                         })(request);
                     }
                 }
@@ -262,7 +262,7 @@ describe('Travelogue', function () {
             });
 
             server.start(function (err) {
-                
+
                 done();
             })
         });
@@ -274,12 +274,12 @@ describe('Travelogue', function () {
             username: 'john',
             password: 'doe'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login',
             payload: JSON.stringify(body)
         };
-        
+
         server.inject(request, function (res) {
 
             var header = res.headers['set-cookie'];
@@ -320,7 +320,7 @@ describe('Travelogue', function () {
             username: 'doe',
             password: 'john'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login',
             payload: JSON.stringify(body)
@@ -352,7 +352,7 @@ describe('Travelogue', function () {
             username: 'john',
             password: 'doe'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login2',
             payload: JSON.stringify(body)
@@ -397,7 +397,7 @@ describe('Travelogue', function () {
             username: 'john',
             password: 'doe'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login3',
             payload: JSON.stringify(body)
@@ -409,14 +409,14 @@ describe('Travelogue', function () {
             done();
         });
     });
-    
+
     it('should authenticate and passthrough to callback', function (done) {
 
         var body = {
             username: 'john',
             password: 'doe'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/loginAuthCallback',
             payload: JSON.stringify(body)
@@ -428,14 +428,14 @@ describe('Travelogue', function () {
             done();
         });
     });
-    
+
     it('should show string versions of flash messages', function (done) {
 
         var body = {
             username: 'john',
             password: 'doe'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/loginSuccessMessage',
             payload: JSON.stringify(body)
@@ -480,13 +480,13 @@ describe('Travelogue', function () {
             username: 'john',
             password: 'xwalmartx'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/loginFailure',
             payload: JSON.stringify(body)
         };
         server.inject(request, function (res) {
-            
+
             var header = res.headers['set-cookie'];
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
@@ -504,20 +504,20 @@ describe('Travelogue', function () {
             });
         });
     });
-    
-   it('should flash error if invalid credentials used', function (done) {
+
+    it('should flash error if invalid credentials used', function (done) {
 
         var body = {
             username: 'john',
             password: 'xwalmartx'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login',
             payload: JSON.stringify(body)
         };
         server.inject(request, function (res) {
-            
+
             var header = res.headers['set-cookie'];
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
@@ -537,20 +537,20 @@ describe('Travelogue', function () {
             });
         });
     });
-   
-   it('should flash string error if invalid credentials used', function (done) {
+
+    it('should flash string error if invalid credentials used', function (done) {
 
         var body = {
             username: 'john',
             password: 'xwalmartx'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login2',
             payload: JSON.stringify(body)
         };
         server.inject(request, function (res) {
-            
+
             var header = res.headers['set-cookie'];
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
@@ -570,20 +570,20 @@ describe('Travelogue', function () {
             });
         });
     });
-   
-   it('should redirect if invalid credentials used and attempt to access restricted page', function (done) {
+
+    it('should redirect if invalid credentials used and attempt to access restricted page', function (done) {
 
         var body = {
             username: 'john',
             password: 'xwalmartx'
         };
-        var request = { 
+        var request = {
             method: 'POST',
             url: '/login',
             payload: JSON.stringify(body)
         };
         server.inject(request, function (res) {
-            
+
             var header = res.headers['set-cookie'];
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 

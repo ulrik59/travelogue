@@ -21,6 +21,7 @@ var plugins = {
 
 var server = new Hapi.Server(config.hostname, config.port);
 server.pack.allow({ ext: true }).require(plugins, function (err) {
+
     if (err) {
         throw err;
     }
@@ -37,16 +38,16 @@ Passport.use(new LocalStrategy(function (username, password, done) {
     // Find or create user here...
     // In production, use password hashing like bcrypt
     if (USERS.hasOwnProperty(username) && USERS[username] == password) {
-        return done(null, {username: username});
+        return done(null, { username: username });
     }
-    
-    return done(null, false, {'message': 'invalid credentials'});
+
+    return done(null, false, { 'message': 'invalid credentials' });
 }));
-Passport.serializeUser(function(user, done) {
+Passport.serializeUser(function (user, done) {
 
     done(null, user);
 });
-Passport.deserializeUser(function(obj, done) {
+Passport.deserializeUser(function (obj, done) {
 
     done(null, obj);
 });
@@ -119,7 +120,7 @@ server.addRoute({
         auth: false,
         handler: function (request) {
 
-            Passport.authenticate('local', { 
+            Passport.authenticate('local', {
                 successRedirect: config.urls.successRedirect,
                 failureRedirect: config.urls.failureRedirect,
                 failureFlash: true
@@ -165,21 +166,6 @@ server.addRoute({
 
             request.session._logout();
             return request.reply.redirect('/');
-        }
-    }
-});
-
-
-server.addRoute({
-    method: 'GET',
-    path: '/public/{path*}',
-    config: {
-        auth: 'passport',
-        handler: {
-            directory: {
-                path: './public',
-                listing: true
-            }
         }
     }
 });

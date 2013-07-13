@@ -31,7 +31,7 @@ var plugins = {
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.pack.allow({ ext: true }).require(plugins, function (err) { 
+server.pack.allow({ ext: true }).require(plugins, function (err) {
 
     if (err) {
         throw err;
@@ -44,11 +44,11 @@ Passport.use(new FacebookStrategy(config.facebook, function (accessToken, refres
     // Find or create user here...
     return done(null, profile);
 }));
-Passport.serializeUser(function(user, done) {
+Passport.serializeUser(function (user, done) {
 
     done(null, user);
 });
-Passport.deserializeUser(function(obj, done) {
+Passport.deserializeUser(function (obj, done) {
 
     done(null, obj);
 });
@@ -84,7 +84,7 @@ server.addRoute({
 
             var html = '<a href="/auth/facebook">Login with Facebook</a>';
             if (request.session) {
-                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session) + "</span></pre>";
+                html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
             }
             return request.reply(html);
         }
