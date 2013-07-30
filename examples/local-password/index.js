@@ -7,7 +7,8 @@ var config = {
     port: 8000,
     urls: {
         failureRedirect: '/login'
-    }
+    },
+    excludePaths: ['/public/']
 };
 var plugins = {
     yar: {
@@ -166,6 +167,17 @@ server.addRoute({
 
             request.session._logout();
             return request.reply.redirect('/');
+        }
+    }
+});
+
+
+server.addRoute({
+    method: 'GET',
+    path: '/public/{path}',
+    handler: {
+        directory: {
+            path: './public'
         }
     }
 });
