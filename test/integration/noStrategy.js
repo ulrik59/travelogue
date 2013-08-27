@@ -25,7 +25,8 @@ describe('Travelogue', function () {
         urls: {
             failureRedirect: '/',
             successRedirect: '/home'
-        }
+        },
+        excludePaths: ['/excluded']
     };
 
     var plugins = {
@@ -98,6 +99,16 @@ describe('Travelogue', function () {
             });
 
             server.addRoute({
+                method: 'GET',
+                path: '/excluded',
+                handler: function () {
+
+                    this.reply('HELLO WORLD!');
+                }
+            });
+
+
+            server.addRoute({
                 method: 'POST',
                 path: '/login',
                 config: {
@@ -123,6 +134,21 @@ describe('Travelogue', function () {
             })
         });
     });
+
+
+    it('should allow unauthenticated requests to excluded paths', function (done) {
+      var request = {
+        method: 'GET',
+        url: '/excluded'
+      };
+
+      server.inject(request, function (res) {
+        expect(res.statusCode).to.equal(200);
+
+        done();
+      })
+    });
+
 
     it('should allow for login via POST', function (done) {
 
