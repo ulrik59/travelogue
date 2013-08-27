@@ -2,13 +2,6 @@ var Hapi = require('hapi');
 var LocalStrategy = require('passport-local').Strategy;
 
 
-var cacheOptions = {
-    engine: 'redis',
-    partition: 'session',
-    host: '127.0.0.1',
-    port: '6379'
-};
-var sessionStore = new Catbox.client(cacheOptions);
 var config = {
     hostname: 'localhost',
     port: 8000,
@@ -22,8 +15,7 @@ var plugins = {
         cookieOptions: {
             password: "worldofwalmart",
             isSecure: false
-        },
-        store: sessionStore
+        }
     },
     travelogue: config // use '../../' instead of travelogue if testing this repo locally
 };
@@ -190,10 +182,8 @@ server.addRoute({
     }
 });
 
-sessionStore.start(function () {
 
-    server.start(function () {
+server.start(function () {
 
-        console.log('server started on port: ', server.info.port);
-    });
+    console.log('server started on port: ', server.info.port);
 });

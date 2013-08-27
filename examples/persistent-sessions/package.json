@@ -1,0 +1,16 @@
+{
+  "name": "travelogue-persistent-sessions",
+  "version": "0.0.0",
+  "description": "Travelogue example showing basic username-password authentication with persistent sessions",
+  "main": "index.js",
+  "author": "Van Nguyen <thegoleffect@gmail.com>",
+  "license": "BSD",
+  "dependencies": {
+    "passport-local": "0.1.x",
+    "passport": "0.1.x",
+    "yar": "0.3.x",
+    "travelogue": "0.4.x",
+    "hapi": "1.x.x",
+    "catbox": "~1.0.0"
+  }
+}
