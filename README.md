@@ -194,6 +194,7 @@ Some settings must be passed into the Hapi plugins architecture.
     - `urls` - Urls used by Travelogue/Passport
         - `failureRedirect` - redirect to this relative URL on failed logins. Defaults to **'/login'**.
         - `successRedirect` - redirect to this relative URL on successful logins. Defaults to **'/'**.
+    - `excludePaths` - array of string paths that will not employ travelogue authorization or authentication; these paths will be excluded from Travelogue.
 
 
 Returns null.

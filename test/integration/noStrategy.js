@@ -131,7 +131,7 @@ describe('Travelogue', function () {
             server.start(function () {
 
                 done();
-            })
+            });
         });
     });
 
