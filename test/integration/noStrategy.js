@@ -137,16 +137,18 @@ describe('Travelogue', function () {
 
 
     it('should allow unauthenticated requests to excluded paths', function (done) {
-      var request = {
-        method: 'GET',
-        url: '/excluded'
-      };
+    
+        var request = {
+            method: 'GET',
+            url: '/excluded'
+        };
 
-      server.inject(request, function (res) {
-        expect(res.statusCode).to.equal(200);
+        server.inject(request, function (res) {
 
-        done();
-      })
+            expect(res.statusCode).to.equal(200);
+
+            done();
+        });
     });
 
 
