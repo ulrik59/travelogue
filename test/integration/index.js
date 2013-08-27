@@ -25,7 +25,8 @@ describe('Travelogue', function () {
         urls: {
             failureRedirect: '/login',
             successRedirect: '/'
-        }
+        },
+        excludePaths: ['/public/']
     };
 
     var plugins = {
