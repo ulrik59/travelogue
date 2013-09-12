@@ -28,6 +28,12 @@ describe('Travelogue', function () {
         },
         excludePaths: ['/public/']
     };
+    
+    var htmlFailureRedirect = {
+        code: 500,
+        message: '<h1>Failed to Login</h1>',
+        type: 'text/html'
+    }
 
     var plugins = {
         yar: {
@@ -126,6 +132,83 @@ describe('Travelogue', function () {
                         passport.authenticate('local', {
                             successRedirect: config.urls.successRedirect,
                             failureRedirect: config.urls.failureRedirect,
+                            failureFlash: true,
+                            successFlash: true,
+                            successMessage: true,
+                            assignProperty: true,
+                            failureMessage: true
+                        })(request);
+                    }
+                }
+            });
+            
+            server.addRoute({
+                method: 'POST',
+                path: '/loginRedirectObjCustom',
+                config: {
+                    validate: {
+                        payload: {
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
+                        }
+                    },
+                    handler: function (request) {
+
+                        passport.authenticate('local', {
+                            successRedirect: config.urls.successRedirect,
+                            failureRedirect: htmlFailureRedirect,
+                            failureFlash: true,
+                            successFlash: true,
+                            successMessage: true,
+                            assignProperty: true,
+                            failureMessage: true
+                        })(request);
+                    }
+                }
+            });
+
+            server.addRoute({
+                method: 'POST',
+                path: '/loginRedirectObjUnauthorized',
+                config: {
+                    validate: {
+                        payload: {
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
+                        }
+                    },
+                    handler: function (request) {
+
+                        passport.authenticate('local', {
+                            successRedirect: config.urls.successRedirect,
+                            failureRedirect: {
+                                message: 'Failed to Login'
+                            },
+                            failureFlash: true,
+                            successFlash: true,
+                            successMessage: true,
+                            assignProperty: true,
+                            failureMessage: true
+                        })(request);
+                    }
+                }
+            });
+
+            server.addRoute({
+                method: 'POST',
+                path: '/loginRedirectObjInvalidFormat',
+                config: {
+                    validate: {
+                        payload: {
+                            username: Hapi.types.String(),
+                            password: Hapi.types.String()
+                        }
+                    },
+                    handler: function (request) {
+
+                        passport.authenticate('local', {
+                            successRedirect: config.urls.successRedirect,
+                            failureRedirect: 1234.5,
                             failureFlash: true,
                             successFlash: true,
                             successMessage: true,
@@ -344,6 +427,83 @@ describe('Travelogue', function () {
                 expect(res.result).to.contain('form');
                 done();
             });
+        });
+    });
+    
+    it('should passthrough customError on fail serializeUser', function (done) {
+
+        var body = {
+            username: 'doe',
+            password: 'john'
+        };
+        var request = {
+            method: 'POST',
+            url: '/loginRedirectObjCustom',
+            payload: JSON.stringify(body)
+        };
+        server.inject(request, function (res) {
+
+            var header = res.headers['set-cookie'];
+            var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
+
+            expect(res.statusCode).to.equal(500);
+            
+            expect(res.payload).to.equal(htmlFailureRedirect.message);
+            done();
+            // var redirect = {
+            //     method: 'GET',
+            //     url: res.headers.location,
+            //     headers: {
+            //         cookie: cookie[1]
+            //     }
+            // };
+            // server.inject(redirect, function (res) {
+
+            //     expect(res.result).to.contain('form');
+            //     done();
+            // });
+        });
+    });
+
+    it('should return unauthorized on fail serializeUser', function (done) {
+
+        var body = {
+            username: 'doe',
+            password: 'john'
+        };
+        var request = {
+            method: 'POST',
+            url: '/loginRedirectObjUnauthorized',
+            payload: JSON.stringify(body)
+        };
+        server.inject(request, function (res) {
+
+            var header = res.headers['set-cookie'];
+            var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
+
+            expect(res.statusCode).to.equal(401);
+            done();
+        });
+    });
+    
+    it('should redirect to root on fail serializeUser with invalid redirectObj format', function (done) {
+
+        var body = {
+            username: 'doe',
+            password: 'john'
+        };
+        var request = {
+            method: 'POST',
+            url: '/loginRedirectObjInvalidFormat',
+            payload: JSON.stringify(body)
+        };
+        server.inject(request, function (res) {
+
+            var header = res.headers['set-cookie'];
+            var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
+
+            expect(res.statusCode).to.equal(302);
+            done();
         });
     });
 
