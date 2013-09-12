@@ -5,7 +5,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var cacheOptions = {
     engine: 'redis',
     partition: 'session',
-    host: '127.0.0.1',
+    host: '69.55.49.28',
     port: '6379'
 };
 var sessionStore = new Catbox.client(cacheOptions);
