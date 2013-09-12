@@ -447,8 +447,7 @@ describe('Travelogue', function () {
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
             expect(res.statusCode).to.equal(500);
-            
-            expect(res.payload).to.equal(htmlFailureRedirect.message);
+            expect(res.result).to.equal(htmlFailureRedirect.message);
             done();
             // var redirect = {
             //     method: 'GET',
