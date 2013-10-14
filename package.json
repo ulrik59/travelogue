@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "passport": "0.1.x",
-    "yar": "0.3.x"
+    "yar": "0.4.x"
   },
   "peerDependencies": {
     "hapi": "1.x.x"
