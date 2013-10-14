@@ -1,7 +1,7 @@
 {
   "name": "travelogue",
   "description": "hapi passport.js integration helper",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Van Nguyen <thegoleffect@gmail.com>",
   "contributors": [
     "Jared Hanson <jaredhanson@gmail.com>",
