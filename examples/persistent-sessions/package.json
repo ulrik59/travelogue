@@ -8,7 +8,7 @@
   "dependencies": {
     "passport-local": "0.1.x",
     "passport": "0.1.x",
-    "yar": "0.3.x",
+    "yar": "0.4.x",
     "travelogue": "0.4.x",
     "hapi": "1.x.x",
     "catbox": "~1.0.0"
