@@ -30,7 +30,7 @@ describe('Travelogue', function () {
     };
     
     var htmlFailureRedirect = {
-        code: 500,
+        code: 401,
         message: '<h1>Failed to Login</h1>',
         type: 'text/html'
     }
@@ -446,7 +446,7 @@ describe('Travelogue', function () {
             var header = res.headers['set-cookie'];
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
-            expect(res.statusCode).to.equal(500);
+            expect(res.statusCode).to.equal(401);
             expect(res.result).to.equal(htmlFailureRedirect.message);
             done();
             // var redirect = {
