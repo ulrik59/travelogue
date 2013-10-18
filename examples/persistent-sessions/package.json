@@ -11,6 +11,7 @@
     "yar": "0.4.x",
     "travelogue": "0.4.x",
     "hapi": "1.x.x",
-    "catbox": "~1.0.0"
+    "catbox": "1.x",
+    "redis": "0.9.x"
   }
 }
