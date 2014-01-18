@@ -7,7 +7,7 @@ var config = {
     port: 8000,
     urls: {
         failureRedirect: '/login'
-    }
+    },
     github: {
         clientID: "...",
         clientSecret: "...",
