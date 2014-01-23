@@ -1,7 +1,7 @@
 {
   "name": "travelogue",
   "description": "hapi passport.js integration helper",
-  "version": "0.4.4",
+  "version": "1.0.0",
   "author": "Van Nguyen <thegoleffect@gmail.com>",
   "contributors": [
     "Jared Hanson <jaredhanson@gmail.com>",
@@ -26,15 +26,15 @@
     "passport": "0.1.x"
   },
   "peerDependencies": {
-    "hapi": "1.x.x",
-    "yar": ">= 0.4.0"
+    "hapi": "2.x.x",
+    "yar": "1.x.x"
   },
   "devDependencies": {
-    "hapi": "1.x.x",
-    "lab": "0.1.x",
+    "hapi": "2.x.x",
+    "lab": "1.x.x",
     "complexity-report": "0.x.x",
     "passport-local": "0.1.x",
-    "yar": "0.4.x"
+    "yar": "1.x.x"
   },
   "scripts": {
     "test": "make test-cov"
