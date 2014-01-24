@@ -51,6 +51,8 @@ describe('Travelogue', function () {
                 'walmart': 'van'
             };
 
+            server.auth.strategy('passport', 'passport');
+
             var passport = server.plugins.travelogue.passport;
             passport.use(new LocalStrategy.Strategy(function (username, password, done) {
 
