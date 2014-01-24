@@ -7,7 +7,7 @@ var config = {
     port: 8000,
     urls: {
         failureRedirect: '/login'
-    }
+    },
     github: {
         clientID: "...",
         clientSecret: "...",
@@ -20,7 +20,7 @@ var plugins = {
             password: "worldofwalmart",
             isSecure: false
         }
-    }
+    },
     travelogue: config // use '../../' instead of travelogue if testing this repo locally
 }
 
