@@ -25,7 +25,7 @@ var plugins = {
 }
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.pack.allow({ ext: true }).require(plugins, function (err) {
+server.pack.require(plugins, function (err) {
 
     if (err) {
         throw err;
@@ -61,11 +61,11 @@ server.addRoute({
     method: 'GET',
     path: '/',
     config: { auth: 'passport' }, // replaces ensureAuthenticated
-    handler: function (request) {
+    handler: function (request, reply) {
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply.redirect('/home');
+        reply().redirect('/home');
     }
 });
 
@@ -75,13 +75,13 @@ server.addRoute({
     path: '/login',
     config: {
         auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
-        handler: function (request) {
+        handler: function (request, reply) {
 
             var html = ['<a href="/auth/github">Login with Github</a>'];
             if (request.session) {
                 html.push("<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>");
             }
-            request.reply(html.join(""));
+            reply(html.join(""));
         }
     }
 });
@@ -91,11 +91,11 @@ server.addRoute({
     method: 'GET',
     path: '/home',
     config: { auth: 'passport' },
-    handler: function (request) {
+    handler: function (request, reply) {
 
         // If logged in already, redirect to /home
         // else to /login
-        return request.reply("ACCESS GRANTED");
+        reply("ACCESS GRANTED");
     }
 });
 
@@ -105,9 +105,9 @@ server.addRoute({
     path: '/auth/github',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
-            Passport.authenticate('github')(request);
+            Passport.authenticate('github')(request, reply);
         } 
     }
 });
@@ -118,15 +118,15 @@ server.addRoute({
     path: '/auth/github/callback',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
             
             Passport.authenticate('github', { 
                 successRedirect: '/',
                 failureRedirect: '/login',
                 failureFlash: true,
-            })(request, function () {
+            })(request, reply, function () {
 
-                return request.reply.redirect('/');
+                reply().redirect('/');
             });
         }
     }
@@ -138,10 +138,10 @@ server.addRoute({
     path: '/clear',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             request.session.reset();
-            request.reply.redirect('/session');
+            reply().redirect('/session');
         }
     }
 });
@@ -152,9 +152,9 @@ server.addRoute({
     path: '/session',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
-            return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
+            reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
         }
     }
 });
@@ -165,10 +165,10 @@ server.addRoute({
     path: '/logout',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             request.session._logout();
-            return request.reply.redirect('/');
+            reply().redirect('/');
         }
     }
 });

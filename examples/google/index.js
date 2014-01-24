@@ -30,7 +30,7 @@ var plugins = {
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.pack.allow({ ext: true }).require(plugins, function (err) { 
+server.pack.require(plugins, function (err) { 
 
     if (err) {
         throw err;
@@ -65,11 +65,11 @@ server.addRoute({
     method: 'GET',
     path: '/',
     config: { auth: 'passport' }, // replaces ensureAuthenticated
-    handler: function (request) {
+    handler: function (request, reply) {
 
         // If logged in already, redirect to /home
         // else to /login
-        return request.reply.redirect('/home');
+        reply().redirect('/home');
     }
 });
 
@@ -79,13 +79,13 @@ server.addRoute({
     path: '/login',
     config: {
         auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
-        handler: function (request) {
+        handler: function (request, reply) {
 
             var html = '<a href="/auth/google">Login with Google</a>';
             if (request.session) {
                 html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
             }
-            return request.reply(html);
+            reply(html);
         }
     }
 });
@@ -95,11 +95,11 @@ server.addRoute({
     method: 'GET',
     path: '/home',
     config: { auth: 'passport' },
-    handler: function (request) {
+    handler: function (request, reply) {
 
         // If logged in already, redirect to /home
         // else to /login
-        return request.reply("ACCESS GRANTED");
+        reply("ACCESS GRANTED");
     }
 });
 
@@ -109,9 +109,9 @@ server.addRoute({
     path: '/auth/google',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
-            Passport.authenticate('google')(request);
+            Passport.authenticate('google')(request, reply);
         }
     }
 });
@@ -122,18 +122,18 @@ server.addRoute({
     path: '/auth/google/return',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             Passport.authenticate('google', {
                 failureRedirect: config.urls.failureRedirect,
                 successRedirect: config.urls.successRedirect,
                 failureFlash: true
-            })(request, function (err) {
+            })(request, reply, function (err) {
 
                 if (err && err.isBoom) {
                     request.session.error = err;
                 }
-                return request.reply.redirect('/');
+                reply().redirect('/');
             });
         }
     }
@@ -145,10 +145,10 @@ server.addRoute({
     path: '/clear',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             request.session.reset();
-            return request.reply.redirect('/session');
+            reply().redirect('/session');
         }
     }
 });
@@ -159,10 +159,10 @@ server.addRoute({
     path: '/logout',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             request.session._logout();
-            return request.reply.redirect('/');
+            reply().redirect('/');
         }
     }
 });
@@ -173,9 +173,9 @@ server.addRoute({
     path: '/session',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
-            return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
+            reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
         }
     }
 });
