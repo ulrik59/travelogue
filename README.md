@@ -43,7 +43,7 @@ var plugins = {
 };
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.pack.allow({ ext: true }).require(plugins, function (err) { 
+server.pack.require(plugins, function (err) { 
 
     if (err) {
         throw err;
@@ -101,8 +101,8 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook',
     config: {
-        handler: function (request) {
-            Passport.authenticate('facebook')(request);
+        handler: function (request, reply) {
+            Passport.authenticate('facebook')(request, reply);
         }
     }
 });
@@ -117,18 +117,18 @@ server.addRoute({
     method: 'GET',
     path: '/auth/facebook/callback',
     config: {
-        handler: function (request) {
+        handler: function (request, reply) {
             
             Passport.authenticate('facebook', {
                 failureRedirect: config.urls.failureRedirect,
                 successRedirect: config.urls.successRedirect,
                 failureFlash: true
-            })(request, function (err) {
+            })(request, reply, function (err) {
 
                 if (err && err.isBoom) {
                     // This would be a good place to flash error message
                 }
-                return request.reply.redirect('/').send();
+                return reply().redirect('/');
             });
         }
     }
@@ -146,11 +146,11 @@ server.addRoute({
     method: 'GET',
     path: '/home',
     config: { auth: 'passport' },
-    handler: function (request) {
+    handler: function (request, reply) {
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply("ACCESS GRANTED");
+        reply("ACCESS GRANTED");
     }
 });
 ```
@@ -168,9 +168,9 @@ server.addRoute({
     path: '/',
     config: { 
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
-            request.reply("Ohai");
+            reply("Ohai");
         }
     },
 });

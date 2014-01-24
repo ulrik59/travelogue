@@ -21,7 +21,7 @@ var plugins = {
 }
 
 var server = new Hapi.Server(config.hostname, config.port);
-server.pack.allow({ ext: true }).require(plugins, function (err) {
+server.pack.require(plugins, function (err) {
 
     if (err) {
         throw err;
@@ -68,11 +68,11 @@ server.addRoute({
     method: 'GET',
     path: '/',
     config: { auth: 'passport' }, // replaces ensureAuthenticated
-    handler: function (request) {
+    handler: function (request, reply) {
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply.redirect('/home');
+        reply().redirect('/home');
     }
 });
 
@@ -82,13 +82,13 @@ server.addRoute({
     path: '/login',
     config: {
         auth: false, // use this if your app uses other hapi auth schemes, otherwise optional
-        handler: function (request) {
+        handler: function (request, reply) {
 
             if (request.session._isAuthenticated()) {
-                request.reply.redirect('/home');
+                reply().redirect('/home');
             } else {
                 var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
-                request.reply(form);
+                reply(form);
             }
         }
     }
@@ -99,11 +99,11 @@ server.addRoute({
     method: 'GET',
     path: '/home',
     config: { auth: 'passport' },
-    handler: function (request) {
+    handler: function (request, reply) {
 
         // If logged in already, redirect to /home
         // else to /login
-        request.reply("ACCESS GRANTED<br/><br/><a href='/logout'>Logout</a>");
+        reply("ACCESS GRANTED<br/><br/><a href='/logout'>Logout</a>");
     }
 });
 
@@ -119,13 +119,13 @@ server.addRoute({
             }
         },
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             Passport.authenticate('local', {
                 successRedirect: config.urls.successRedirect,
                 failureRedirect: config.urls.failureRedirect,
                 failureFlash: true
-            })(request)
+            })(request, reply)
         }
     }
 });
@@ -136,10 +136,10 @@ server.addRoute({
     path: '/clear',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             request.session.reset();
-            request.reply.redirect('/session');
+            reply().redirect('/session');
         }
     }
 });
@@ -150,9 +150,9 @@ server.addRoute({
     path: '/session',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
-            return request.reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
+            reply("<pre>" + JSON.stringify(request.session, null, 2) + "</pre><br/><br/><a href='/login'>Login</a>");
         }
     }
 });
@@ -163,10 +163,10 @@ server.addRoute({
     path: '/logout',
     config: {
         auth: false,
-        handler: function (request) {
+        handler: function (request, reply) {
 
             request.session._logout();
-            return request.reply.redirect('/');
+            reply().redirect('/');
         }
     }
 });

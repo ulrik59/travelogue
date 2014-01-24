@@ -42,13 +42,15 @@ describe('Travelogue', function () {
 
     before(function (done) {
 
-        server.pack.allow({ ext: true }).require(plugins, function (err) {
+        server.pack.require(plugins, function (err) {
 
             expect(err).to.not.exist;
 
             var USERS = {
                 'john': 'doe',
-                'doe': 'john'
+                'doe': 'john',
+                'broken': 'test',
+                'missing': 'test'
             };
 
             var passport = server.plugins.travelogue.passport;
@@ -73,55 +75,60 @@ describe('Travelogue', function () {
             });
 
             passport.deserializeUser(function (obj, done) {
+                if (obj.username == 'broken') {
+                    return done('test deserializeUser err');
+                } else if (obj.username === 'missing') {
+                    return done(null, null);
+                }
 
                 done(null, obj);
             });
 
             // addRoutes
-            server.addRoute({
+            server.route({
                 method: 'GET',
                 path: '/',
                 config: { auth: 'passport' },
-                handler: function () {
+                handler: function (request, reply) {
 
-                    this.reply.redirect('/home');        // If logged in already, redirect to /home, otherwise to /login
+                    reply('You are being redirected...').redirect('/home');        // If logged in already, redirect to /home, otherwise to /login
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'GET',
                 path: '/login',
-                handler: function (request) {
+                handler: function (request, reply) {
 
                     var form = '<form action="/login" method="post"> <div> <label>Username:</label> <input type="text" name="username"/> </div> <div> <label>Password:</label> <input type="password" name="password"/> </div> <div> <input type="submit" value="Log In"/> </div> </form>';
                     if (request.session) {
                         form += '<br/><br/><pre><span style="background-color: #eee">session: ' + JSON.stringify(request.session) + '</span></pre>';
                     }
-                    request.reply(form);
+                    reply(form);
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'GET',
                 path: '/home',
                 config: { auth: 'passport' },
-                handler: function () {
+                handler: function (request, reply) {
 
-                    this.reply('ACCESS GRANTED');               // If logged in already, redirect to /home, otherwise to /login
+                    reply('ACCESS GRANTED');               // If logged in already, redirect to /home, otherwise to /login
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'POST',
                 path: '/login',
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.types.String(),
-                            password: Hapi.types.String()
+                            username: Hapi.types.string(),
+                            password: Hapi.types.string()
                         }
                     },
-                    handler: function (request) {
+                    handler: function (request, reply) {
 
                         passport.authenticate('local', {
                             successRedirect: config.urls.successRedirect,
@@ -131,22 +138,22 @@ describe('Travelogue', function () {
                             successMessage: true,
                             assignProperty: true,
                             failureMessage: true
-                        })(request);
+                        })(request, reply);
                     }
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'POST',
                 path: '/login2',
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.types.String(),
-                            password: Hapi.types.String()
+                            username: Hapi.types.string(),
+                            password: Hapi.types.string()
                         }
                     },
-                    handler: function (request) {
+                    handler: function (request, reply) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         request.session.returnTo = '/session'
@@ -157,46 +164,66 @@ describe('Travelogue', function () {
                             failureMessage: 'not logged in',
                             failureFlash: 'not logged in',
                             successReturnToOrRedirect: request.session.returnTo
-                        })(request);
+                        })(request, reply);
                     }
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'POST',
                 path: '/login3',
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.types.String(),
-                            password: Hapi.types.String()
+                            username: Hapi.types.string(),
+                            password: Hapi.types.string()
                         }
                     },
-                    handler: function (request) {
+                    handler: function (request, reply) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', {
                             failureRedirect: config.urls.failureRedirect,
                             authInfo: true
-                        })(request, function () {
+                        })(request, reply, function () {
 
-                            request.reply('ohai');
+                            reply('ohai');
                         });
                     }
                 }
             });
 
-            server.addRoute({
+            server.route({
+                method: 'POST',
+                path: '/login4',
+                config: {
+                    validate: {
+                        payload: {
+                            username: Hapi.types.string(),
+                            password: Hapi.types.string()
+                        }
+                    },
+                    handler: function (request, reply) {
+
+                        passport.authenticate('localbroken', {
+                            failureRedirect: config.urls.failureRedirect,
+                            authInfo: true
+                        })(request, reply);
+                    }
+                }
+            });
+
+            server.route({
                 method: 'POST',
                 path: '/loginAuthCallback',
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.types.String(),
-                            password: Hapi.types.String()
+                            username: Hapi.types.string(),
+                            password: Hapi.types.string()
                         }
                     },
-                    handler: function (request) {
+                    handler: function (request, reply) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', {
@@ -204,23 +231,23 @@ describe('Travelogue', function () {
                             authInfo: true
                         }, function () {
 
-                            request.reply('ohai');
-                        })(request);
+                            reply('ohai');
+                        })(request, reply);
                     }
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'POST',
                 path: '/loginSuccessMessage',
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.types.String(),
-                            password: Hapi.types.String()
+                            username: Hapi.types.string(),
+                            password: Hapi.types.string()
                         }
                     },
-                    handler: function (request) {
+                    handler: function (request, reply) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', {
@@ -228,42 +255,59 @@ describe('Travelogue', function () {
                             failureRedirect: config.urls.failureRedirect,
                             successMessage: 'logged in',
                             successFlash: 'logged in'
-                        })(request);
+                        })(request, reply);
                     }
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'POST',
                 path: '/loginFailure',
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.types.String(),
-                            password: Hapi.types.String()
+                            username: Hapi.types.string(),
+                            password: Hapi.types.string()
                         }
                     },
-                    handler: function (request) {
+                    handler: function (request, reply) {
 
                         // request.body = request.payload; // Not needed in 0.0.2 but kept for reference
                         passport.authenticate('local', {
-
-                        })(request);
+                            failureMessage: 'not logged in'
+                        })(request, reply);
                     }
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'GET',
                 path: '/session',
-                handler: function (request) {
+                handler: function (request, reply) {
 
-                    request.reply(request.session._store._flash);
+                    reply(request.session.user);
+                }
+            });
+
+            server.route({
+                method: 'GET',
+                path: '/flash',
+                handler: function (request, reply) {
+
+                    reply(request.session._store._flash);
+                }
+            });
+
+            server.route({
+                method: 'GET',
+                path: '/message',
+                handler: function (request, reply) {
+
+                    reply(request.session.messages);
                 }
             });
 
             server.start(function (err) {
-
                 done();
             })
         });
@@ -347,6 +391,70 @@ describe('Travelogue', function () {
         });
     });
 
+    it('should 500 on fail deserializeUser', function (done) {
+
+        var body = {
+            username: 'broken',
+            password: 'test'
+        };
+        var request = {
+            method: 'POST',
+            url: '/login',
+            payload: JSON.stringify(body)
+        };
+        server.inject(request, function (res) {
+
+            var header = res.headers['set-cookie'];
+            var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
+
+            expect(res.statusCode).to.equal(302);
+            var redirect = {
+                method: 'GET',
+                url: res.headers.location,
+                headers: {
+                    cookie: cookie[1]
+                }
+            };
+            server.inject(redirect, function (res) {
+
+                expect(res.statusCode).to.equal(500);
+                done();
+            });
+        });
+    });
+
+    it('should redirect if deserializeUser returns null', function (done) {
+
+        var body = {
+            username: 'missing',
+            password: 'test'
+        };
+        var request = {
+            method: 'POST',
+            url: '/login',
+            payload: JSON.stringify(body)
+        };
+        server.inject(request, function (res) {
+
+            var header = res.headers['set-cookie'];
+            var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
+
+            expect(res.statusCode).to.equal(302);
+            var redirect = {
+                method: 'GET',
+                url: res.headers.location,
+                headers: {
+                    cookie: cookie[1]
+                }
+            };
+            server.inject(redirect, function (res) {
+
+                expect(res.statusCode).to.equal(302);
+                done();
+            });
+        });
+    });
+
     it('should allow for login via POST with successReturnToOrRedirect', function (done) {
 
         var body = {
@@ -411,6 +519,24 @@ describe('Travelogue', function () {
         });
     });
 
+    it('should error when specifying a bad auth strategy', function (done) {
+
+        var body = {
+            username: 'john',
+            password: 'doe'
+        };
+        var request = {
+            method: 'POST',
+            url: '/login4',
+            payload: JSON.stringify(body)
+        };
+        server.inject(request, function (res) {
+
+            expect(res.statusCode).to.equal(500);
+            done();
+        });
+    });
+
     it('should authenticate and passthrough to callback', function (done) {
 
         var body = {
@@ -461,7 +587,7 @@ describe('Travelogue', function () {
 
                 var readSession = {
                     method: 'GET',
-                    url: '/session',
+                    url: '/flash',
                     headers: {
                         cookie: cookie[1]
                     }
@@ -475,7 +601,7 @@ describe('Travelogue', function () {
         });
     });
 
-    it('should flash error if invalid credentials used (failureMessage)', function (done) {
+    it('should store error message if invalid credentials used (failureMessage)', function (done) {
 
         var body = {
             username: 'john',
@@ -493,7 +619,7 @@ describe('Travelogue', function () {
 
             var readSession = {
                 method: 'GET',
-                url: '/session',
+                url: '/message',
                 headers: {
                     cookie: cookie[1]
                 }
@@ -524,7 +650,7 @@ describe('Travelogue', function () {
 
             var readSession = {
                 method: 'GET',
-                url: '/session',
+                url: '/flash',
                 headers: {
                     cookie: cookie[1]
                 }
@@ -557,7 +683,7 @@ describe('Travelogue', function () {
 
             var readSession = {
                 method: 'GET',
-                url: '/session',
+                url: '/flash',
                 headers: {
                     cookie: cookie[1]
                 }

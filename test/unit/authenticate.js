@@ -43,7 +43,7 @@ describe('#authenticate', function () {
         it('should return callback if defined and handle case where one failure', function (done) {
 
             var failure = { challenge: 1, status: 'test' };
-            var allFailed = Travelogue.internals.allFailedFactory({}, [failure], {}, function (err, success, challenge, status) {
+            var allFailed = Travelogue.internals.allFailedFactory({}, function () { }, [failure], {}, function (err, success, challenge, status) {
 
                 expect(err).to.not.exist;
                 expect(success).to.equal(false);
@@ -57,7 +57,7 @@ describe('#authenticate', function () {
         it('should return callback if defined and handle case where failures', function (done) {
 
 
-            var allFailed = Travelogue.internals.allFailedFactory({}, failures, {}, function (err, success, challenges, statuses) {
+            var allFailed = Travelogue.internals.allFailedFactory({}, function () { }, failures, {}, function (err, success, challenges, statuses) {
 
                 expect(err).to.not.exist;
                 expect(success).to.equal(false);
@@ -75,27 +75,22 @@ describe('#authenticate', function () {
         it('should set status to challenge if given number, no callback given', function (done) {
 
             var reqMock = {};
-            reqMock.reply = function (response) {
 
-                // nothing to test, just for coverage
-                done();
-            };
-
-            var allFailed = Travelogue.internals.allFailedFactory(reqMock, failures, {});
+            var allFailed = Travelogue.internals.allFailedFactory(reqMock, function () { done(); }, failures, {});
             allFailed();
         });
 
         it('should return Unauthorized challenge if given string, no callback given', function (done) {
 
             var reqMock = {};
-            reqMock.reply = function (response) {
+            var reply = function (response) {
 
                 var expectedVal = strFailures.map(function (d) { return d.challenge; }).join(', ');
-                expect(response.response.headers['WWW-Authenticate']).to.equal(expectedVal);
+                expect(response.output.headers['WWW-Authenticate']).to.equal(expectedVal);
                 done();
             };
 
-            var allFailed = Travelogue.internals.allFailedFactory(reqMock, strFailures, {});
+            var allFailed = Travelogue.internals.allFailedFactory(reqMock, reply, strFailures, {});
             allFailed();
         });
     });
@@ -131,7 +126,6 @@ describe('#authenticate', function () {
             var cbMock = function (err) {
 
                 expect(err).to.exist;
-                expect(err.trace).to.exist;
                 expect(err.message.split(':').pop().slice(1)).to.equal(error.toString());
                 done();
             };
@@ -143,19 +137,20 @@ describe('#authenticate', function () {
     describe('#delegateRedirectFactory', function () {
 
         var expectedUrl = '/test'
-        var reqMock = {
-            reply: {}
-        };
 
         it('should return a redirect given a url', function (done) {
 
-            reqMock.reply.redirect = function (url) {
+            var replyMock = function () {
+                return {
+                    redirect: function (url) {
+                        expect(url).to.exist;
+                        expect(url).to.equal(expectedUrl);
+                        done();
+                    }
+                }
+            }
 
-                expect(url).to.exist;
-                expect(url).to.equal(expectedUrl);
-                done();
-            };
-            var delegateRedirect = Travelogue.internals.delegateRedirectFactory(reqMock);
+            var delegateRedirect = Travelogue.internals.delegateRedirectFactory({}, replyMock);
             delegateRedirect(expectedUrl);
         });
     });
@@ -170,14 +165,17 @@ describe('#authenticate', function () {
             var reqMock = {
                 reply: {}
             };
-            reqMock.reply.redirect = function (url) {
-
-                expect(url).to.exist;
-                expect(url).to.equal(expectedUrl);
-                done();
-            };
+            var replyMock = function () {
+                return {
+                    redirect: function (url) {
+                        expect(url).to.exist;
+                        expect(url).to.equal(expectedUrl);
+                        done();
+                    }
+                }
+            }
             var delegateMock = {};
-            delegateMock.redirect = Travelogue.internals.delegateRedirectFactory(reqMock);
+            delegateMock.redirect = Travelogue.internals.delegateRedirectFactory({}, replyMock);
 
             var actions = Travelogue.internals.actionsFactory();
             actions.redirect.call(delegateMock, expectedUrl);
@@ -188,7 +186,6 @@ describe('#authenticate', function () {
             var cbMock = function (err) {
 
                 expect(err).to.exist;
-                expect(err.trace).to.exist;
                 expect(err.message.split(':').pop().slice(1)).to.equal(error.toString());
                 done();
             };

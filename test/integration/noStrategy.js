@@ -42,7 +42,7 @@ describe('Travelogue', function () {
 
     before(function (done) {
 
-        server.pack.allow({ ext: true }).require(plugins, function (err) {
+        server.pack.require(plugins, function (err) {
 
             expect(err).to.not.exist;
 
@@ -78,53 +78,52 @@ describe('Travelogue', function () {
             });
 
             // addRoutes
-            server.addRoute({
+            server.route({
                 method: 'GET',
                 path: '/',
                 // config: { auth: 'passport' },
-                handler: function () {
+                handler: function (request, reply) {
 
-                    this.reply('Hello');
+                    reply('Hello');
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'GET',
                 path: '/home',
                 config: { auth: 'passport' },
-                handler: function () {
+                handler: function (request, reply) {
 
-                    this.reply('ACCESS GRANTED');
+                    reply('ACCESS GRANTED');
                 }
             });
 
-            server.addRoute({
+            server.route({
                 method: 'GET',
                 path: '/excluded',
-                handler: function () {
+                handler: function (request, reply) {
 
-                    this.reply('HELLO WORLD!');
+                    reply('HELLO WORLD!');
                 }
             });
 
 
-            server.addRoute({
+            server.route({
                 method: 'POST',
                 path: '/login',
                 config: {
                     validate: {
                         payload: {
-                            username: Hapi.types.String(),
-                            password: Hapi.types.String()
+                            username: Hapi.types.string().required(),
+                            password: Hapi.types.string().required()
                         }
-                    },
-                    handler: function (request) {
-
-                        passport.authenticate('localx', {
-                            successRedirect: config.urls.successRedirect,
-                            failureRedirect: config.urls.failureRedirect
-                        })(request);
                     }
+                },
+                handler: function (request, reply) {
+                    passport.authenticate('local', {
+                        successRedirect: config.urls.successRedirect,
+                        failureRedirect: config.urls.failureRedirect
+                    })(request, reply);
                 }
             });
 
@@ -166,11 +165,11 @@ describe('Travelogue', function () {
 
         server.inject(request, function (res) {
 
+            expect(res.statusCode).to.equal(302);
             var header = res.headers['set-cookie'];
             expect(header).to.exist;
             var cookie = header[0].match(/(session=[^\x00-\x20\"\,\;\\\x7F]*)/);
 
-            expect(res.statusCode).to.equal(302);
             var redirect = {
                 method: 'GET',
                 url: res.headers.location,
@@ -180,7 +179,7 @@ describe('Travelogue', function () {
             };
             server.inject(redirect, function (res) {
 
-                expect(res.result).to.equal('Hello');
+                expect(res.result).to.equal('ACCESS GRANTED');
                 done();
             });
         });
