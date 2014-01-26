@@ -53,6 +53,8 @@ describe('Travelogue', function () {
                 'missing': 'test'
             };
 
+            server.auth.strategy('passport', 'passport');
+
             var passport = server.plugins.travelogue.passport;
             passport.use(new LocalStrategy.Strategy(function (username, password, done) {
 

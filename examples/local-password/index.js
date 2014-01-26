@@ -28,6 +28,7 @@ server.pack.require(plugins, function (err) {
     }
 });
 
+server.auth.strategy('passport', 'passport');
 
 var USERS = {
     "van": "walmart"

@@ -50,6 +50,8 @@ server.pack.require(plugins, function (err) {
     }
 });
 
+server.auth.strategy('passport', 'passport');
+
 var Passport = server.plugins.travelogue.passport;
 
 // Follow normal Passport rules to add Strategies
@@ -97,7 +99,7 @@ For most third-party authentication schemes/strategies, External Authentication 
 This handler typically will redirect the user to the third-party website, authenticate the user, and redirect to the `callbackURL` configured for that specific strategy (the Internal Authentication step).
 
 ```javascript
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/auth/facebook',
     config: {
@@ -113,7 +115,7 @@ server.addRoute({
 For all authentication schemes and strategies, the External Authentication information must be sent back to the server. Thus, one route handler must be specifically catered to the task of retrieving this information and processing it appropriately (using the `Passport.authenticate(strategy, options)(request, passthroughHandler)` format).
 
 ```javascript
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/auth/facebook/callback',
     config: {
@@ -142,7 +144,7 @@ After verifying the identity of a user, the server will need to determine the pe
 In the typical case, once verified and logged-in, the user has full access to a new set of routes. Travelogue provides a shortcut to verify that a user is logged-on via the `config.auth` interface.
 
 ```javascript
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/home',
     config: { auth: 'passport' },
@@ -163,7 +165,7 @@ However, it may be the case that there may be several levels of user access perm
 It is possible to use multiple Hapi authentication schemes simultaneously within one application. To prevent conflicts, set the `config.auth` to `false` in any handler that should NOT use any auth schemes. An example is shown below.
 
 ```javascript
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/',
     config: { 
@@ -190,7 +192,6 @@ Some settings must be passed into the Hapi plugins architecture.
         - `password` - (Required) secret key used to hash cookie
         - `isSecure` - enables TLS/SSL cookies. Defaults to **true**. Disable for normal http.
 - `travelogue` - the options object passed to travelogue
-    - `defaultMode` - (Optional) If enable, will auto-assign routes to use default auth strategy (which may not necessarily be passport). Defaults to **false**.
     - `urls` - Urls used by Travelogue/Passport
         - `failureRedirect` - redirect to this relative URL on failed logins. Defaults to **'/login'**.
         - `successRedirect` - redirect to this relative URL on successful logins. Defaults to **'/'**.

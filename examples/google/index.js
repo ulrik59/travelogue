@@ -37,6 +37,8 @@ server.pack.require(plugins, function (err) {
     }
 });
 
+server.auth.strategy('passport', 'passport');
+
 var Passport = server.plugins.travelogue.passport;
 Passport.use(new GoogleStrategy(config.google, function (accessToken, refreshToken, profile, done) {
 

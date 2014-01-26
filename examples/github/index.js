@@ -32,6 +32,8 @@ server.pack.require(plugins, function (err) {
     }
 });
 
+server.auth.strategy('passport', 'passport');
+
 var Passport = server.plugins.travelogue.passport;
 Passport.use(new GithubStrategy(config.github, function (accessToken, refreshToken, profile, done) {
 
