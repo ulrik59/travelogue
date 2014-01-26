@@ -22,7 +22,7 @@ describe('#initialize', function () {
 
     Travelogue.internals.setHapi(require('hapi'));
 
-    var initialize = Travelogue.internals.initialize();
+    var initialize = Travelogue.internals.initialize(require('passport'));
 
     it('should generate new session if request.session undefined', function (done) {
 

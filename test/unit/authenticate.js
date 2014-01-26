@@ -25,7 +25,7 @@ describe('#authenticate', function () {
 
     it('should accept function in place of options', function (done) {
 
-        var authenticate = Travelogue.internals.authenticate(Travelogue.internals.defaults)('local', function (err) { });
+        var authenticate = Travelogue.internals.authenticate(Travelogue.internals.defaults)(require('passport'), 'local', function (err) { });
         expect(authenticate).to.exist;
         done();
     });

@@ -138,7 +138,7 @@ describe('Travelogue', function () {
 
 
     it('should allow unauthenticated requests to excluded paths', function (done) {
-    
+
         var request = {
             method: 'GET',
             url: '/excluded'
