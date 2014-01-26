@@ -23,7 +23,7 @@
     "node": "0.10.x"
   },
   "dependencies": {
-    "passport": "0.1.x"
+    "passport": "0.2.x"
   },
   "peerDependencies": {
     "hapi": "2.x.x",
