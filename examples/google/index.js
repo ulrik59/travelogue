@@ -62,8 +62,8 @@ if (process.env.DEBUG) {
     });
 }
 
-// addRoutes
-server.addRoute({
+// routes
+server.route({
     method: 'GET',
     path: '/',
     config: { auth: 'passport' }, // replaces ensureAuthenticated
@@ -76,7 +76,7 @@ server.addRoute({
 });
 
 
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/login',
     config: {
@@ -93,7 +93,7 @@ server.addRoute({
 });
 
 
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/home',
     config: { auth: 'passport' },
@@ -106,7 +106,7 @@ server.addRoute({
 });
 
 
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/auth/google',
     config: {
@@ -119,7 +119,7 @@ server.addRoute({
 });
 
 
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/auth/google/return',
     config: {
@@ -142,7 +142,7 @@ server.addRoute({
 });
 
 
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/clear',
     config: {
@@ -156,7 +156,7 @@ server.addRoute({
 });
 
 
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/logout',
     config: {
@@ -170,7 +170,7 @@ server.addRoute({
 });
 
 
-server.addRoute({
+server.route({
     method: 'GET',
     path: '/session',
     config: {
