@@ -838,7 +838,7 @@ describe('Travelogue API-Mode', function () {
 
             var locationHeader = res.headers.location;
             expect(locationHeader).to.exist;
-            expect(locationHeader).to.equal('/');
+            expect(locationHeader).to.match(/http:\/\/0\.0\.0\.0\:[0-9]{4,5}\//);
             expect(res.statusCode).to.equal(204);
             done();
         });
