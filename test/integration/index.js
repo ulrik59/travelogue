@@ -1,6 +1,7 @@
 // Load modules
 
 var Hapi = require('hapi');
+var Joi = require('joi');
 var Lab = require('lab');
 var LocalStrategy = require('passport-local');
 
@@ -138,8 +139,8 @@ describe('Travelogue non-API-mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
@@ -163,8 +164,8 @@ describe('Travelogue non-API-mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
@@ -189,8 +190,8 @@ describe('Travelogue non-API-mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
@@ -213,8 +214,8 @@ describe('Travelogue non-API-mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
@@ -233,8 +234,8 @@ describe('Travelogue non-API-mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
@@ -257,8 +258,8 @@ describe('Travelogue non-API-mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
@@ -280,8 +281,8 @@ describe('Travelogue non-API-mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
@@ -793,8 +794,8 @@ describe('Travelogue API-Mode', function () {
             config: {
                 validate: {
                     payload: {
-                        username: Hapi.types.string(),
-                        password: Hapi.types.string()
+                        username: Joi.string(),
+                        password: Joi.string()
                     }
                 },
                 handler: function (request, reply) {
