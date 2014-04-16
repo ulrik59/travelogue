@@ -26,15 +26,15 @@
     "passport": "0.2.x"
   },
   "peerDependencies": {
-    "hapi": "2.x.x",
-    "yar": "1.x.x"
+    "hapi": ">=2.x",
+    "yar": ">=1.x"
   },
   "devDependencies": {
-    "hapi": "2.x.x",
+    "hapi": "3.x",
     "lab": "1.x.x",
     "complexity-report": "0.x.x",
     "passport-local": "0.1.x",
-    "yar": "1.x.x"
+    "yar": "2.x"
   },
   "scripts": {
     "test": "make test-cov"
