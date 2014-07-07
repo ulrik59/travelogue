@@ -21,16 +21,20 @@ var it = Lab.test;
 
 function initServer(server, config) {
 
-    var plugins = {
-        yar: {
+    var plugins = [{
+        plugin: require('yar'),
+        options: {
             cookieOptions: {
                 password: 'secret'
             }
-        },
-        '../../': config
-    };
+        }
+    },
+    {
+        plugin: require('../../'),
+        options: config
+    }];
 
-    server.pack.require(plugins, function (err) {
+    server.pack.register(plugins, function (err) {
 
         expect(err).to.not.exist;
 

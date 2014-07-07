@@ -27,12 +27,12 @@
     "hoek": "2.x.x"
   },
   "peerDependencies": {
-    "hapi": "4.x.x",
+    "hapi": "6.x.x",
     "yar": "2.x.x"
   },
   "devDependencies": {
-    "hapi": "4.x.x",
-    "joi": "3.x.x",
+    "hapi": "6.x.x",
+    "joi": "4.6.x",
     "lab": "3.x.x",
     "complexity-report": "1.x.x",
     "passport-local": "1.x.x",

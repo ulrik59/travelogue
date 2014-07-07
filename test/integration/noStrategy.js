@@ -30,20 +30,24 @@ describe('Travelogue', function () {
         excludePaths: ['/excluded']
     };
 
-    var plugins = {
-        yar: {
+    var plugins = [{
+        plugin: require('yar'),
+        options: {
             cookieOptions: {
                 password: 'worldofwalmart'
             }
-        },
-        '../../': config
-    };
+        }
+    },
+    {
+        plugin: require('../../'),
+        options: config
+    }];
 
     var server = new Hapi.Server(0);
 
     before(function (done) {
 
-        server.pack.require(plugins, function (err) {
+        server.pack.register(plugins, function (err) {
 
             expect(err).to.not.exist;
 
